@@ -22,6 +22,7 @@
             :options="materials"
             filter
             optionLabel="nombre"
+            optionValue="id"
             placeholder="Seleccionar Material"
             class="w-full"
           />
@@ -38,7 +39,7 @@
           @click="visible = false"
           autofocus
         />
-        <Button label="Crear Producto" autofocus />
+        <Button label="Crear Producto" autofocus  @click="createProduct"/>
       </template>
     </Dialog>
   </div>
@@ -46,6 +47,7 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import materialsService from "../services/client/materials.service";
+import productsService from "../services/client/products.service";
 
 const name = ref("");
 const visible = ref(false);
@@ -53,6 +55,22 @@ const materials = ref([]);
 const selectedMaterial = ref(null);
 
 const { data, isFetching } = materialsService.useListQuery();
+
+
+const { mutateAsync } = productsService.useCreateMutation();
+
+async function createProduct() {
+  const payload = {
+    nombre : name.value,
+    material_id : selectedMaterial.value
+  };
+  try {
+    await mutateAsync(payload);
+  } catch (error) {
+    console.log(error);
+  }
+  visible.value = false;
+}
 
 onMounted(() => {
   if (data.value) {
