@@ -4,7 +4,6 @@
     <Dialog
       v-model:visible="visible"
       modal
-      header="Edit Profile"
       :style="{ width: '25rem' }"
     >
       <template #header>
