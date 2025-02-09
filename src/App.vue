@@ -1,8 +1,13 @@
-<script setup></script>
+<script setup>
+import Materials from './components/Materials.vue';
+import Productos from './components/Productos.vue';
+</script>
 
 <template>
-  <div>
-    <h1 class="text-3xl font-bold underline">Hello world!</h1>
-    <Button label="Submit" />
+  <div class="space-y-4">
+
+    <Materials />
+
+    <Productos />
   </div>
 </template>

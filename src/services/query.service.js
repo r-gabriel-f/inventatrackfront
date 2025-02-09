@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from "@tanstack/vue-query";
-import ApiService from "./api.service";
+import ApiService from "./api.services";
 
 class QueryService extends ApiService {
   constructor(resource, key) {
@@ -11,10 +11,10 @@ class QueryService extends ApiService {
   useListQuery(
     params,
     options = {
-      refetchOnWindowFocus: boolean | "always",
-      refetchOnMount: boolean | "always",
-      retryOnMount: boolean,
-      enabled: boolean,
+      refetchOnWindowFocus: true, 
+      refetchOnMount: true,     
+      retryOnMount: false,      
+      enabled: true,     
     }
   ) {
     return useQuery({
@@ -36,10 +36,10 @@ class QueryService extends ApiService {
     id,
     params,
     options = {
-      refetchOnWindowFocus: boolean | "always",
-      refetchOnMount: boolean | "always",
-      retryOnMount: boolean,
-      enabled: boolean,
+      refetchOnWindowFocus: true,
+      refetchOnMount: true, 
+      retryOnMount: false,
+      enabled: true,
     }
   ) {
     return useQuery({

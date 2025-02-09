@@ -4,13 +4,16 @@ import App from "./App.vue";
 
 import PrimeVue from "primevue/config";
 import Aura from "@primevue/themes/aura";
-
+import { VueQueryPlugin } from '@tanstack/vue-query';
 
 import Button from "primevue/button";
+import Dialog from "primevue/dialog";
+import InputText from "primevue/inputtext";
+import Select from "primevue/select";
 const app = createApp(App);
 
+app.use(VueQueryPlugin);
 
-app.component('Button', Button);
 
 app.use(PrimeVue, {
   theme: {
@@ -20,4 +23,10 @@ app.use(PrimeVue, {
     },
   },
 });
+
+
+app.component('Button', Button);
+app.component('Dialog', Dialog);
+app.component('InputText', InputText);
+app.component('Select', Select);
 app.mount("#app");
