@@ -1,5 +1,8 @@
 <template>
   <div class="card">
+    <div>
+      <Button label="Crear Reporte" @click="reporteDia" />
+    </div>
     <DataTable :value="salidas">
       <Column field="material" header="Material"></Column>
       <Column field="producto" header="Producto"></Column>
@@ -16,12 +19,38 @@
 
 <script setup>
 import { ref, onMounted, watch } from "vue";
+import axios from "axios";
 import { applyFormat } from "../../helpers/utils";
 import salidaService from "../../services/client/salida.service";
+import reportsService from "../../services/client/reports.service";
 
 const salidas = ref([]);
 
 const { data, isFetching, refetch } = salidaService.useListQuery();
+
+const { data: dataReport, refetch: fetchReport } = reportsService.useListQuery(
+  null,
+  { enabled: false }
+);
+
+const reporteDia = async () => {
+  try {
+    const response = await axios.get("http://localhost:3000/api/reporte-dia", {
+      responseType: "blob", // Esto es importante para recibir el archivo PDF como blob
+    });
+
+    // Crear un enlace para descargar el PDF
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `reporte_${new Date().toISOString().split("T")[0]}.pdf`; // Nombre del archivo con la fecha actual
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch (error) {
+    console.error("Error al generar el reporte:", error);
+  }
+};
 
 onMounted(() => {
   if (data.value) {
