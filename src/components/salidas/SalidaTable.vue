@@ -13,7 +13,7 @@
       <Column field="rumpero" header="Rumpero"></Column>
       <Column field="trabajador" header="Trabajador">
         <template #body="data">
-          {{ data.trabajador ?? "-" }}
+          {{ data.data.trabajador ?? "-" }}
         </template>
       </Column>
       <Column field="fecha_salida" header="Fecha">

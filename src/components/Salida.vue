@@ -180,7 +180,6 @@ onMounted(() => {
 watch(isFetchingProduct, () => {
   if (dataProduct.value) {
     productos.value = dataProduct.value;
-    console.log(productos.value);
   }
 });
 watch(selectedMaterial, (newValue) => {
