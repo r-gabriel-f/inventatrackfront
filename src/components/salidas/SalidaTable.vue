@@ -6,11 +6,35 @@
     <DataTable :value="salidas">
       <Column field="material" header="Material"></Column>
       <Column field="producto" header="Producto"></Column>
+      <Column field="unidad" header="Unidad"></Column>
+      <Column field="cantidad" header="Cantidad"></Column>
       <Column field="nivel" header="Nivel"></Column>
       <Column field="responsable_nombre" header="Responsable"></Column>
+      <Column field="rumpero" header="Rumpero"></Column>
+      <Column field="trabajador" header="Trabajador">
+        <template #body="data">
+          {{ data.trabajador ?? "-" }}
+        </template>
+      </Column>
       <Column field="fecha_salida" header="Fecha">
         <template #body="data">
           {{ applyFormat(data.fecha_salida) }}
+        </template>
+      </Column>
+      <Column header="Acciones">
+        <template #body="data">
+          <div>
+            <Button
+              icon="pi pi-pencil"
+              class="p-button-rounded p-button-success mr-2"
+              @click="edit(data.id)"
+            ></Button>
+            <Button
+              icon="pi pi-trash"
+              class="p-button-rounded p-button-danger"
+              @click="deleteData(data.id)"
+            ></Button>
+          </div>
         </template>
       </Column>
     </DataTable>

@@ -6,6 +6,8 @@ import PrimeVue from "primevue/config";
 import Aura from "@primevue/themes/aura";
 import { VueQueryPlugin } from "@tanstack/vue-query";
 
+import 'primeicons/primeicons.css'
+
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import InputText from "primevue/inputtext";

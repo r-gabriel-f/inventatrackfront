@@ -1,11 +1,7 @@
 <template>
   <div class="card flex justify-center">
     <Button label="Agregar Producto a Material" @click="visible = true" />
-    <Dialog
-      v-model:visible="visible"
-      modal
-      :style="{ width: '25rem' }"
-    >
+    <Dialog v-model:visible="visible" modal :style="{ width: '25rem' }">
       <template #header>
         <div class="inline-flex items-center justify-center gap-2">
           <span class="font-bold whitespace-nowrap"
@@ -13,24 +9,28 @@
           >
         </div>
       </template>
-     
-        <div class="flex items-center gap-4 mb-4">
-          <label for="material" class="font-semibold w-24">Material</label>
-          <Select
-            v-model="selectedMaterial"
-            :options="materials"
-            filter
-            optionLabel="nombre"
-            optionValue="id"
-            placeholder="Seleccionar Material"
-            class="w-full"
-          />
-        </div>
-        <div class="flex items-center gap-4 mb-4">
-          <label for="nombre" class="font-semibold w-24">Nombre</label>
-          <InputText id="nombre" class="flex-auto w-full" v-model="name" />
-        </div>
-     
+
+      <div class="flex items-center gap-4 mb-4">
+        <label for="material" class="font-semibold w-24">Material</label>
+        <Select
+          v-model="selectedMaterial"
+          :options="materials"
+          filter
+          optionLabel="nombre"
+          optionValue="id"
+          placeholder="Seleccionar Material"
+          class="w-full"
+        />
+      </div>
+      <div class="flex items-center gap-4 mb-4">
+        <label for="nombre" class="font-semibold w-24">Nombre</label>
+        <InputText id="nombre" class="flex-auto w-full" v-model="name" />
+      </div>
+      <div class="flex items-center gap-4 mb-4">
+        <label for="unidad" class="font-semibold w-24">Unidad</label>
+        <InputText id="unidad" class="flex-auto w-full" v-model="unidad" />
+      </div>
+
       <template #footer>
         <Button
           label="Cancel"
@@ -38,7 +38,7 @@
           @click="visible = false"
           autofocus
         />
-        <Button label="Crear Producto" autofocus  @click="createProduct"/>
+        <Button label="Crear Producto" autofocus @click="createProduct" />
       </template>
     </Dialog>
   </div>
@@ -52,16 +52,17 @@ const name = ref("");
 const visible = ref(false);
 const materials = ref([]);
 const selectedMaterial = ref(null);
+const unidad = ref(null);
 
 const { data, isFetching } = materialsService.useListQuery();
-
 
 const { mutateAsync } = productsService.useCreateMutation();
 
 async function createProduct() {
   const payload = {
-    nombre : name.value,
-    material_id : selectedMaterial.value
+    nombre: name.value,
+    material_id: selectedMaterial.value,
+    unidad: unidad.value,
   };
   try {
     await mutateAsync(payload);

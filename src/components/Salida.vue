@@ -34,7 +34,11 @@
             optionValue="id"
             placeholder="Seleccionar Producto"
             class="w-full"
-          />
+          >
+            <template #option="slotProps">
+              {{ slotProps.option.nombre }} ({{ slotProps.option.unidad }})
+            </template>
+          </Select>
         </div>
         <div class="flex items-center gap-4 mb-4">
           <label for="material" class="font-semibold w-24">Nivel</label>
@@ -49,6 +53,10 @@
           />
         </div>
         <div class="flex items-center gap-4 mb-4">
+          <label for="nombre" class="font-semibold w-24">Cantidad</label>
+          <InputText id="nombre" class="flex-auto w-full" v-model="cantidad" />
+        </div>
+        <div class="flex items-center gap-4 mb-4">
           <label for="nombre" class="font-semibold w-24"
             >Nombre Responsable</label
           >
@@ -56,6 +64,22 @@
             id="nombre"
             class="flex-auto w-full"
             v-model="nameResponsable"
+          />
+        </div>
+        <div class="flex items-center gap-4 mb-4">
+          <label for="nombre" class="font-semibold w-24">Rumpero</label>
+          <InputText
+            id="nombre"
+            class="flex-auto w-full"
+            v-model="nameRumpero"
+          />
+        </div>
+        <div v-if="nameSelectedMaterial === 'EQUIPOS'" class="flex items-center gap-4 mb-4">
+          <label for="nombre" class="font-semibold w-24">Trabajador</label>
+          <InputText
+            id="nombre"
+            class="flex-auto w-full"
+            v-model="nameTrabajador"
           />
         </div>
       </div>
@@ -83,8 +107,12 @@ const materials = ref([]);
 const productos = ref([]);
 const selectedProducto = ref(null);
 const selectedMaterial = ref(null);
+const nameSelectedMaterial = ref("");
 const selectedNivel = ref(null);
-const nameResponsable = ref('');
+const nameResponsable = ref("");
+const cantidad = ref(0);
+const nameRumpero = ref("");
+const nameTrabajador = ref("");
 const niveles = ref([
   { id: 1, name: "HARRISON" },
   { id: 2, name: "PATIÑO" },
@@ -118,10 +146,13 @@ const { mutateAsync } = salidaService.useCreateMutation();
 
 async function createSalida() {
   const payload = {
-    material_id : selectedMaterial.value,
-    producto_id : selectedProducto.value,
-    nivel : selectedNivel.value,
-    responsable_nombre : nameResponsable.value
+    material_id: selectedMaterial.value,
+    producto_id: selectedProducto.value,
+    nivel: selectedNivel.value,
+    responsable_nombre: nameResponsable.value,
+    cantidad: cantidad.value,
+    rumpero: nameRumpero.value,
+    trabajador: nameTrabajador.value,
   };
   try {
     await mutateAsync(payload);
@@ -149,6 +180,18 @@ onMounted(() => {
 watch(isFetchingProduct, () => {
   if (dataProduct.value) {
     productos.value = dataProduct.value;
+    console.log(productos.value);
   }
 });
+watch(selectedMaterial, (newValue) => {
+  if (newValue) {
+    const selectedMaterialObject = materials.value.find(
+      (material) => material.id === newValue
+    );
+    if (selectedMaterialObject) {
+      nameSelectedMaterial.value = selectedMaterialObject.nombre;
+    }
+  }
+});
+
 </script>
