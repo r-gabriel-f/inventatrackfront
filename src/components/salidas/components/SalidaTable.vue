@@ -1,5 +1,6 @@
 <template>
   <div class="card m-5">
+    <Toast />
     <div class="flex justify-between">
       <div class="flex gap-2">
         <Materials />
@@ -44,7 +45,7 @@
             <Button
               icon="pi pi-trash"
               class="p-button-rounded p-button-danger"
-              @click="deleteData(data.id)"
+              @click="deleteData(data.data.id)"
             ></Button>
           </div>
         </template>
@@ -63,7 +64,8 @@ import reportsService from "../../../services/client/reports.service";
 import Materials from "./Materials.vue";
 import Products from "./Productos.vue";
 import Salida from "./Salida.vue";
-
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
 const salidas = ref([]);
 
 const { data, isFetching, refetch } = salidaService.useListQuery();
@@ -91,6 +93,29 @@ const reporteDia = async () => {
     console.error("Error al generar el reporte:", error);
   }
 };
+
+
+const { mutateAsync: deleteDataMutation } = salidaService.useRemoveMutation();
+async function deleteData(id) {
+  console.log(id);
+  try {
+    await deleteDataMutation(id);
+    toast.add({
+      severity: "success",
+      summary: "Éxito",
+      detail: "Salida eliminada",
+      life: 3000,
+    });
+    refetch();
+  } catch (error) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Salida no eliminada",
+      life: 3000,
+    });
+  }
+}
 
 onMounted(() => {
   if (data.value) {
