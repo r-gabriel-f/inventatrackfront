@@ -1,5 +1,6 @@
 <template>
   <div class="card flex justify-center">
+    <Toast />
     <Button label="Crear salida de material" @click="visible = true" />
     <Dialog v-model:visible="visible" modal>
       <template #header>
@@ -74,7 +75,10 @@
             v-model="nameRumpero"
           />
         </div>
-        <div v-if="nameSelectedMaterial === 'EQUIPOS'" class="flex items-center gap-4 mb-4">
+        <div
+          v-if="nameSelectedMaterial === 'EQUIPOS'"
+          class="flex items-center gap-4 mb-4"
+        >
           <label for="nombre" class="font-semibold w-24">Trabajador</label>
           <InputText
             id="nombre"
@@ -101,7 +105,8 @@ import { computed, onMounted, ref, watch } from "vue";
 import materialsService from "../../../services/client/materials.service";
 import productsService from "../../../services/client/products.service";
 import salidaService from "../../../services/client/salida.service";
-
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
 const visible = ref(false);
 const materials = ref([]);
 const productos = ref([]);
@@ -129,11 +134,18 @@ const niveles = ref([
   { id: 13, name: "RELAVES" },
   { id: 14, name: "PLANTA PILOTO" },
 ]);
+const emit = defineEmits(["change"]);
+const {
+  data,
+  isFetching,
+  refetch: refetchMaterials,
+} = materialsService.useListQuery({}, { enabled: false });
 
-const { data, isFetching } = materialsService.useListQuery();
-
-const { data: dataProduct, isFetching: isFetchingProduct } =
-  productsService.useListQuery();
+const {
+  data: dataProduct,
+  isFetching: isFetchingProduct,
+  refetch,
+} = productsService.useListQuery({}, { enabled: false });
 
 const filteredProductos = computed(() => {
   if (!selectedMaterial.value) return productos.value;
@@ -146,42 +158,65 @@ const { mutateAsync } = salidaService.useCreateMutation();
 
 async function createSalida() {
   const payload = {
-    material_id: selectedMaterial.value,
-    producto_id: selectedProducto.value,
-    nivel: selectedNivel.value,
-    responsable_nombre: nameResponsable.value,
-    cantidad: cantidad.value,
-    rumpero: nameRumpero.value,
-    trabajador: nameTrabajador.value,
+    material_id: selectedMaterial.value ?? null,
+    producto_id: selectedProducto.value ?? null,
+    nivel: selectedNivel.value ?? null,
+    responsable_nombre: nameResponsable.value ?? null,
+    cantidad: cantidad.value ?? null,
+    rumpero: nameRumpero.value ?? null,
+    trabajador: nameTrabajador.value ?? null,
   };
   try {
     await mutateAsync(payload);
+    toast.add({
+      severity: "success",
+      summary: "Salida creada",
+      detail: "Salida creada exitosamente",
+      life: 3000,
+    });
+    visible.value = false;
+    selectedMaterial.value = null;
+    selectedProducto.value = null;
+    selectedNivel.value = null;
+    nameResponsable.value = "";
+    cantidad.value = 0;
+    nameRumpero.value = "";
+    nameTrabajador.value = "";
+    emit("change");
   } catch (error) {
-    console.log(error);
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Error al crear la salida",
+      life: 3000,
+    });
   }
-  visible.value = false;
 }
 
-onMounted(() => {
+watch(visible, (newVal) => {
+  if (newVal) {
+    refetchMaterials();
+  }
+});
+
+watch(data, () => {
   if (data.value) {
     materials.value = data.value;
   }
 });
-watch(isFetching, () => {
-  if (data.value) {
-    materials.value = data.value;
+
+watch(visible, (newVal) => {
+  if (newVal) {
+    refetch();
   }
 });
-onMounted(() => {
+
+watch(dataProduct, () => {
   if (dataProduct.value) {
     productos.value = dataProduct.value;
   }
 });
-watch(isFetchingProduct, () => {
-  if (dataProduct.value) {
-    productos.value = dataProduct.value;
-  }
-});
+
 watch(selectedMaterial, (newValue) => {
   if (newValue) {
     const selectedMaterialObject = materials.value.find(
@@ -192,5 +227,4 @@ watch(selectedMaterial, (newValue) => {
     }
   }
 });
-
 </script>

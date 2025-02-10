@@ -1,5 +1,6 @@
 <template>
   <div class="card flex justify-center">
+    <Toast />
     <Button label="Agregar Material" @click="visible = true" />
     <Dialog
       v-model:visible="visible"
@@ -22,6 +23,7 @@
           @click="visible = false"
           autofocus
         />
+
         <Button label="Crear Material" autofocus @click="createMaterial" />
       </template>
     </Dialog>
@@ -30,11 +32,13 @@
 <script setup>
 import { ref } from "vue";
 import materialsService from "../../../services/client/materials.service";
-
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
 const name = ref("");
 const visible = ref(false);
 
 const { mutateAsync } = materialsService.useCreateMutation();
+
 
 async function createMaterial() {
   const payload = {
@@ -42,9 +46,21 @@ async function createMaterial() {
   };
   try {
     await mutateAsync(payload);
+    toast.add({
+      severity: "success",
+      summary: "Material creado",
+      detail: "Material creado exitosamente",
+      life: 3000,
+    })
+    name.value = "";
+    visible.value = false;
   } catch (error) {
-    console.log(error);
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Material no creado",
+      life: 3000,
+    })
   }
-  visible.value = false;
 }
 </script>

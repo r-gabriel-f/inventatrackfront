@@ -1,9 +1,16 @@
 <template>
-  <div class="card">
-    <div>
-      <Button label="Crear Reporte" @click="reporteDia" />
+  <div class="card m-5">
+    <div class="flex justify-between">
+      <div class="flex gap-2">
+        <Materials />
+        <Products />
+        <Salida @change="refetch" />
+      </div>
+      <div>
+        <Button label="Crear Reporte" @click="reporteDia" />
+      </div>
     </div>
-    <DataTable :value="salidas">
+    <DataTable :value="salidas" stripedRows scrollable scrollHeight="850px">
       <Column field="material" header="Material"></Column>
       <Column field="producto" header="Producto"></Column>
       <Column field="unidad" header="Unidad"></Column>
@@ -13,9 +20,14 @@
       <Column field="rumpero" header="Rumpero"></Column>
       <Column field="trabajador" header="Trabajador">
         <template #body="data">
-          {{ data.data.trabajador ?? "-" }}
+          {{
+            data.data.trabajador && data.data.trabajador.trim() !== ""
+              ? data.data.trabajador
+              : "-"
+          }}
         </template>
       </Column>
+
       <Column field="fecha_salida" header="Fecha">
         <template #body="data">
           {{ applyFormat(data.fecha_salida) }}
@@ -47,6 +59,10 @@ import axios from "axios";
 import { applyFormat } from "../../../helpers/utils";
 import salidaService from "../../../services/client/salida.service";
 import reportsService from "../../../services/client/reports.service";
+
+import Materials from "./Materials.vue";
+import Products from "./Productos.vue";
+import Salida from "./Salida.vue";
 
 const salidas = ref([]);
 
@@ -84,7 +100,6 @@ onMounted(() => {
 watch(isFetching, () => {
   if (data.value) {
     salidas.value = data.value;
-    console.log(salidas.value);
   }
 });
 </script>

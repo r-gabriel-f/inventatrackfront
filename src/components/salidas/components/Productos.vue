@@ -1,5 +1,6 @@
 <template>
   <div class="card flex justify-center">
+    <Toast />
     <Button label="Agregar Producto a Material" @click="visible = true" />
     <Dialog v-model:visible="visible" modal :style="{ width: '25rem' }">
       <template #header>
@@ -38,23 +39,25 @@
           @click="visible = false"
           autofocus
         />
+
         <Button label="Crear Producto" autofocus @click="createProduct" />
       </template>
     </Dialog>
   </div>
 </template>
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import materialsService from "../../../services/client/materials.service";
 import productsService from "../../../services/client/products.service";
-
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
 const name = ref("");
 const visible = ref(false);
 const materials = ref([]);
 const selectedMaterial = ref(null);
 const unidad = ref(null);
 
-const { data, isFetching } = materialsService.useListQuery();
+const { data, refetch } = materialsService.useListQuery({}, { enabled: false });
 
 const { mutateAsync } = productsService.useCreateMutation();
 
@@ -66,18 +69,33 @@ async function createProduct() {
   };
   try {
     await mutateAsync(payload);
+    toast.add({
+      severity: "success",
+      summary: "Éxito",
+      detail: "Producto creado",
+      life: 3000,
+    })
+    visible.value = false;
+    name.value = "";
+    unidad.value = null;
+    selectedMaterial.value = null;
   } catch (error) {
-    console.log(error);
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Producto no creado",
+      life: 3000,
+    })
   }
-  visible.value = false;
 }
 
-onMounted(() => {
-  if (data.value) {
-    materials.value = data.value;
+watch(visible, (newVal) => {
+  if (newVal) {
+    refetch();
   }
 });
-watch(isFetching, () => {
+
+watch(data, () => {
   if (data.value) {
     materials.value = data.value;
   }
