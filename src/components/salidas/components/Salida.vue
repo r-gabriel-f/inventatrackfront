@@ -98,9 +98,9 @@
 </template>
 <script setup>
 import { computed, onMounted, ref, watch } from "vue";
-import materialsService from "../services/client/materials.service";
-import productsService from "../services/client/products.service";
-import salidaService from "../services/client/salida.service";
+import materialsService from "../../../services/client/materials.service";
+import productsService from "../../../services/client/products.service";
+import salidaService from "../../../services/client/salida.service";
 
 const visible = ref(false);
 const materials = ref([]);

@@ -45,8 +45,8 @@
 </template>
 <script setup>
 import { onMounted, ref, watch } from "vue";
-import materialsService from "../services/client/materials.service";
-import productsService from "../services/client/products.service";
+import materialsService from "../../../services/client/materials.service";
+import productsService from "../../../services/client/products.service";
 
 const name = ref("");
 const visible = ref(false);

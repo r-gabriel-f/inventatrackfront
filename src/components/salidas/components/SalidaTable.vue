@@ -44,9 +44,9 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import axios from "axios";
-import { applyFormat } from "../../helpers/utils";
-import salidaService from "../../services/client/salida.service";
-import reportsService from "../../services/client/reports.service";
+import { applyFormat } from "../../../helpers/utils";
+import salidaService from "../../../services/client/salida.service";
+import reportsService from "../../../services/client/reports.service";
 
 const salidas = ref([]);
 

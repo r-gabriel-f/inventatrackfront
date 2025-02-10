@@ -29,7 +29,7 @@
 </template>
 <script setup>
 import { ref } from "vue";
-import materialsService from "../services/client/materials.service";
+import materialsService from "../../../services/client/materials.service";
 
 const name = ref("");
 const visible = ref(false);
