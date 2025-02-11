@@ -27,7 +27,7 @@
         <Button 
           type="button" 
           label="Generar Reporte" 
-          @click="generarReporteMensual"
+          @click="generarReporte"
           :disabled="!dateFecha"
         ></Button>
       </div>
@@ -45,6 +45,7 @@ const menu = ref();
 const visible = ref(false);
 const dateFecha = ref(null);
 const formattedDate = ref(null);
+const reporteTipo = ref(null); // Nueva propiedad para almacenar el tipo de reporte
 
 const items = ref([
   {
@@ -61,9 +62,18 @@ const items = ref([
         label: "Reporte Del Mes",
         icon: "pi pi-calendar",
         command: () => {
+          reporteTipo.value = 'mensual';
           visible.value = true;
         },
       },
+      {
+        label: "Reporte Total Mes",
+        icon: "pi pi-calendar",
+        command: () => {
+          reporteTipo.value = 'mensualTotal';
+          visible.value = true;
+        },
+      }
     ],
   },
 ]);
@@ -100,7 +110,7 @@ const reporteDia = async () => {
   }
 };
 
-const generarReporteMensual = async () => {
+const generarReporte = async () => {
   try {
     if (!formattedDate.value) {
       toast.add({
@@ -112,34 +122,34 @@ const generarReporteMensual = async () => {
       return;
     }
 
-    const response = await axios.get(
-      `http://localhost:3000/api/reportes/mensual/${formattedDate.value}`,
-      {
-        responseType: "blob",
-      }
-    );
+    const url = `http://localhost:3000/api/reportes/${reporteTipo.value === 'mensual' ? 'mensual' : 'mensual-total'}/${formattedDate.value}`;
 
-    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const response = await axios.get(url, {
+      responseType: "blob",
+    });
+
     const a = document.createElement("a");
-    a.href = url;
-    a.download = `reporte_mensual_${formattedDate.value}.pdf`;
+    const fileName = `reporte_${reporteTipo.value === 'mensual' ? 'mensual' : 'mensual-total'}_${formattedDate.value}.pdf`;
+    a.href = window.URL.createObjectURL(new Blob([response.data]));
+    a.download = fileName;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+
     cancelar();
     
     toast.add({
       severity: "success",
       summary: "Éxito",
-      detail: "Reporte mensual generado correctamente",
+      detail: `Reporte ${reporteTipo.value === 'mensual' ? 'mensual' : 'mensual-total'} generado correctamente`,
       life: 3000,
     });
   } catch (error) {
-    let mensaje = "Error al generar el reporte mensual";
+    let mensaje = `Error al generar el reporte ${reporteTipo.value === 'mensual' ? 'mensual' : 'mensual-total'}`;
     if (error.response && error.response.status === 404) {
       mensaje = `No hay salidas registradas para el mes seleccionado`;
     }
-    
+
     toast.add({
       severity: "error",
       summary: "Error",
@@ -154,7 +164,6 @@ watch(dateFecha, (newDate) => {
     const year = newDate.getFullYear();
     const month = String(newDate.getMonth() + 1).padStart(2, '0');
     formattedDate.value = `${year}-${month}`;
-    console.log(formattedDate.value);
   } else {
     formattedDate.value = null;
   }
