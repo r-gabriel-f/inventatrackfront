@@ -19,6 +19,7 @@ import IconField from 'primevue/iconfield';
 import ToastService from 'primevue/toastservice';
 import InputSwitch from 'primevue/inputswitch';
 import Menu from 'primevue/menu';
+import Calendar from 'primevue/calendar';
 const app = createApp(App);
 
 app.use(VueQueryPlugin);
@@ -43,4 +44,5 @@ app.component('Toast', Toast);
 app.component('IconField', IconField);
 app.component('InputSwitch', InputSwitch);
 app.component('Menu', Menu);
+app.component('Calendar', Calendar);
 app.mount("#app");
