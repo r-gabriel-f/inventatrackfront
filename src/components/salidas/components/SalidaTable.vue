@@ -1,6 +1,7 @@
 <template>
   <div class="card m-5">
     <Toast />
+
     <div class="flex justify-between">
       <div class="flex gap-2">
         <Materials />
@@ -8,15 +9,25 @@
         <Salida @change="refetch" />
       </div>
       <div>
-        <Button label="Crear Reporte" @click="reporteDia" />
+        <Reportes />
       </div>
     </div>
-    <DataTable :value="salidas" stripedRows scrollable scrollHeight="850px">
+    <div class="card flex justify-center m-5 space-x-3">
+      <span>Ver del Dia</span>
+      <InputSwitch v-model="checked" />
+      <span>Ver Todos</span>
+    </div>
+    <DataTable
+      :value="sortedSalidas"
+      stripedRows
+      scrollable
+      scrollHeight="850px"
+    >
+      <Column field="nivel" header="Nivel"></Column>
       <Column field="material" header="Material"></Column>
       <Column field="producto" header="Producto"></Column>
       <Column field="unidad" header="Unidad"></Column>
       <Column field="cantidad" header="Cantidad"></Column>
-      <Column field="nivel" header="Nivel"></Column>
       <Column field="responsable_nombre" header="Responsable"></Column>
       <Column field="rumpero" header="Rumpero"></Column>
       <Column field="trabajador" header="Trabajador">
@@ -28,10 +39,11 @@
           }}
         </template>
       </Column>
-
       <Column field="fecha_salida" header="Fecha">
         <template #body="data">
-          {{ applyFormat(data.fecha_salida) }}
+          {{
+            data.data.fecha_salida ? applyFormat(data.data.fecha_salida) : "-"
+          }}
         </template>
       </Column>
       <Column header="Acciones">
@@ -55,45 +67,35 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import axios from "axios";
+import { ref, onMounted, watch, computed } from "vue";
 import { applyFormat } from "../../../helpers/utils";
 import salidaService from "../../../services/client/salida.service";
 import reportsService from "../../../services/client/reports.service";
-
+import Reportes from "./Reportes.vue";
 import Materials from "./Materials.vue";
 import Products from "./Productos.vue";
 import Salida from "./Salida.vue";
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const salidas = ref([]);
+const checked = ref(false);
 
-const { data, isFetching, refetch } = salidaService.useListQuery();
+const parans = ref({
+  todas: false,
+});
+const { data, isFetching, refetch } = salidaService.useListQuery(parans);
+const sortedSalidas = computed(() => {
+  return [...salidas.value].sort((a, b) => {
+    if (a.material !== b.material) {
+      return a.material.localeCompare(b.material);
+    }
 
-const { data: dataReport, refetch: fetchReport } = reportsService.useListQuery(
-  null,
-  { enabled: false }
-);
-
-const reporteDia = async () => {
-  try {
-    const response = await axios.get("http://localhost:3000/api/reporte-dia", {
-      responseType: "blob", // Esto es importante para recibir el archivo PDF como blob
-    });
-
-    // Crear un enlace para descargar el PDF
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `reporte_${new Date().toISOString().split("T")[0]}.pdf`; // Nombre del archivo con la fecha actual
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  } catch (error) {
-    console.error("Error al generar el reporte:", error);
-  }
-};
-
+    if (a.nivel !== b.nivel) {
+      return a.nivel.localeCompare(b.nivel);
+    }
+    return new Date(b.fecha_salida) - new Date(a.fecha_salida);
+  });
+});
 
 const { mutateAsync: deleteDataMutation } = salidaService.useRemoveMutation();
 async function deleteData(id) {
@@ -126,5 +128,9 @@ watch(isFetching, () => {
   if (data.value) {
     salidas.value = data.value;
   }
+});
+watch(checked, () => {
+  parans.value.todas = checked.value;
+  refetch();
 });
 </script>

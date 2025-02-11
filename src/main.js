@@ -17,6 +17,8 @@ import Column from "primevue/column";
 import Toast from 'primevue/toast';
 import IconField from 'primevue/iconfield';
 import ToastService from 'primevue/toastservice';
+import InputSwitch from 'primevue/inputswitch';
+import Menu from 'primevue/menu';
 const app = createApp(App);
 
 app.use(VueQueryPlugin);
@@ -39,4 +41,6 @@ app.component("DataTable", DataTable);
 app.component("Column", Column);
 app.component('Toast', Toast);
 app.component('IconField', IconField);
+app.component('InputSwitch', InputSwitch);
+app.component('Menu', Menu);
 app.mount("#app");
