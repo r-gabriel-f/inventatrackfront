@@ -100,6 +100,13 @@ const reporteDia = async () => {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+
+    toast.add({
+      severity: "success",
+      summary: "Éxito",
+      detail: "Reporte generado correctamente del dia",
+      life: 3000,
+    })
   } catch (error) {
     toast.add({
       severity: "error",
