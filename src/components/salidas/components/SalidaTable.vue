@@ -21,14 +21,14 @@
       <span>Ver Todos</span>
     </div>
     <div class="h-[700px]">
-      <div class="card flex justify-end m-2">
+      <div class="card flex justify-end my-2">
         <Calendar v-model="dateFecha" view="month" dateFormat="mm/yy" />
       </div>
       <DataTable
         :value="filteredSalidas"
         stripedRows
         scrollable
-        scrollHeight="700px"
+        scrollHeight="650px"
       >
         <template #empty> No hay Salidas de Material </template>
         <Column field="nivel" header="Nivel"></Column>

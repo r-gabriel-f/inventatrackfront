@@ -36,7 +36,7 @@
         <Button
           label="Cancel"
           severity="secondary"
-          @click="visible = false"
+          @click="cancel"
           autofocus
         />
 
@@ -89,6 +89,12 @@ async function createProduct() {
   }
 }
 
+const cancel = () => {
+  visible.value = false;
+  name.value = "";
+  unidad.value = null;
+  selectedMaterial.value = null;
+}
 watch(visible, (newVal) => {
   if (newVal) {
     refetch();

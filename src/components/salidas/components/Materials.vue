@@ -20,7 +20,7 @@
         <Button
           label="Cancel"
           severity="secondary"
-          @click="visible = false"
+          @click="cancel"
           autofocus
         />
 
@@ -39,6 +39,10 @@ const visible = ref(false);
 
 const { mutateAsync } = materialsService.useCreateMutation();
 
+const cancel = () => {
+  visible.value = false;
+  name.value = "";
+}
 
 async function createMaterial() {
   const payload = {
