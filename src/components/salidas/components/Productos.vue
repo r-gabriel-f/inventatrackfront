@@ -1,7 +1,7 @@
 <template>
   <div class="card flex justify-center">
     <Toast />
-    <Button label="Agregar Producto a Material" @click="visible = true" />
+    <Button label="Agregar Producto a Material" @click="openDialog" />
     <Dialog v-model:visible="visible" modal :style="{ width: '25rem' }">
       <template #header>
         <div class="inline-flex items-center justify-center gap-2">
@@ -33,14 +33,14 @@
       </div>
 
       <template #footer>
-        <Button
-          label="Cancel"
-          severity="secondary"
-          @click="cancel"
-          autofocus
-        />
+        <Button label="Cancel" severity="secondary" @click="cancel" autofocus />
 
-        <Button label="Crear Producto" autofocus @click="createProduct" :disabled="!name.trim() || !selectedMaterial || !unidad.trim()"/>
+        <Button
+          label="Crear Producto"
+          autofocus
+          @click="createProduct"
+          :disabled="!name.trim() || !selectedMaterial || !unidad.trim()"
+        />
       </template>
     </Dialog>
   </div>
@@ -54,10 +54,21 @@ const toast = useToast();
 const name = ref("");
 const visible = ref(false);
 const materials = ref([]);
+const dataProductos = ref([]);
 const selectedMaterial = ref(null);
 const unidad = ref(null);
 
-const { data, refetch } = materialsService.useListQuery({}, { enabled: false });
+const optionsM = {
+  enabled: false,
+};
+const optionsP = {
+  enabled: false,
+};
+
+const { data, refetch } = materialsService.useListQuery({}, optionsM);
+
+const { data: dataProduct, refetch: refetchProduct } =
+  productsService.useListQuery({}, optionsP);
 
 const { mutateAsync } = productsService.useCreateMutation();
 
@@ -68,42 +79,62 @@ async function createProduct() {
     unidad: unidad.value,
   };
   try {
-    await mutateAsync(payload);
-    toast.add({
-      severity: "success",
-      summary: "Éxito",
-      detail: "Producto creado",
-      life: 3000,
-    })
-    visible.value = false;
-    name.value = "";
-    unidad.value = null;
-    selectedMaterial.value = null;
+    const existe = dataProductos.value.find(
+      (producto) =>
+        producto.material_id === selectedMaterial.value &&
+        producto.nombre.toLowerCase() === name.value.toLowerCase() &&
+        producto.unidad.toLowerCase() === unidad.value.toLowerCase()
+    );
+    if (existe) {
+      toast.add({
+        severity: "error",
+        summary: "Error",
+        detail: "Producto ya existe",
+        life: 3000,
+      });
+    } else {
+      await mutateAsync(payload);
+      toast.add({
+        severity: "success",
+        summary: "Éxito",
+        detail: "Producto creado",
+        life: 3000,
+      });
+      cancel();
+    }
   } catch (error) {
     toast.add({
       severity: "error",
       summary: "Error",
       detail: "Producto no creado",
       life: 3000,
-    })
+    });
   }
 }
-
+const openDialog = async () => {
+  optionsM.enabled = true;
+  optionsP.enabled = true;
+  await refetch();
+  await refetchProduct();
+  visible.value = true;
+};
 const cancel = () => {
   visible.value = false;
   name.value = "";
   unidad.value = null;
   selectedMaterial.value = null;
-}
-watch(visible, (newVal) => {
-  if (newVal) {
-    refetch();
-  }
-});
+};
 
 watch(data, () => {
   if (data.value) {
     materials.value = data.value;
+  }
+});
+
+watch(dataProduct, () => {
+  if (dataProduct.value) {
+    dataProductos.value = dataProduct.value;
+    console.log(dataProductos.value);
   }
 });
 </script>

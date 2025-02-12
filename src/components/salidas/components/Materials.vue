@@ -40,7 +40,7 @@ const options = {
   refetchOnWindowFocus: false,
   refetchOnReconnect: false,
 };
-const { data, isFetching, refetch } = materialsService.useListQuery(
+const { data, refetch } = materialsService.useListQuery(
   {},
   options
 );
@@ -62,7 +62,7 @@ async function createMaterial() {
   };
   try {
     const existMaterial = dataMaterials.value.find(
-      (material) => material.nombre === name.value
+      (material) => material.nombre.toLowerCase() === name.value.toLowerCase()
     );
     if (existMaterial) {
       toast.add({
@@ -80,8 +80,7 @@ async function createMaterial() {
         detail: "Material creado exitosamente",
         life: 3000,
       });
-      name.value = "";
-      visible.value = false;
+      cancel();
     }
   } catch (error) {
     toast.add({

@@ -247,14 +247,14 @@ async function handleSubmit() {
 
 const openDialog = async (isEdit = false) => {
   clearForm();
-  isEditMode.value = isEdit; // Establecer el modo según el parámetro
+  isEditMode.value = isEdit;
   paramts.enabled = true;
   paramtsMaterial.enabled = true;
   await Promise.all([refetch(), refetchMaterials()]);
   visible.value = true;
 };
 const handleButtonClick = () => {
-  openDialog(false); // Explícitamente modo creación
+  openDialog(false);
 };
 
 onMounted(() => {
