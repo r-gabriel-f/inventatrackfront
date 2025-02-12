@@ -41,21 +41,31 @@ const password = ref("");
 const loginObtener = async () => {
   try {
     if (user.value === "omargf" && password.value === "67440842LpOGF") {
+      localStorage.setItem("token", "usuario_autenticado");
+
       toast.add({
         severity: "success",
-        summary: "Inicio de sesión exitoso",
+        summary: "Inicio de sesión exitoso",
         detail: "Bienvenido",
         life: 3000,
       });
+
       setTimeout(() => {
         router.push({ name: "Home" });
       }, 2000);
+    } else {
+      toast.add({
+        severity: "error",
+        summary: "Error",
+        detail: "Credenciales incorrectas",
+        life: 3000,
+      });
     }
   } catch (error) {
     toast.add({
       severity: "error",
       summary: "Error",
-      detail: "Credenciales incorrectas",
+      detail: "Hubo un problema al iniciar sesión",
       life: 3000,
     });
   }

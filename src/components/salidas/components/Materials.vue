@@ -24,7 +24,7 @@
           autofocus
         />
 
-        <Button label="Crear Material" autofocus @click="createMaterial" />
+        <Button label="Crear Material" autofocus @click="createMaterial" :disabled="!name.trim()"/>
       </template>
     </Dialog>
   </div>

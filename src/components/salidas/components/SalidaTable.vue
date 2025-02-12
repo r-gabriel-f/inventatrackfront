@@ -1,7 +1,6 @@
 <template>
   <div class="card m-5">
     <Toast />
-
     <div class="flex justify-between">
       <div class="flex gap-2">
         <Materials />
@@ -21,52 +20,59 @@
       <InputSwitch v-model="checked" />
       <span>Ver Todos</span>
     </div>
-    <DataTable
-      :value="sortedSalidas"
-      stripedRows
-      scrollable
-      scrollHeight="850px"
-    >
-      <Column field="nivel" header="Nivel"></Column>
-      <Column field="material" header="Material"></Column>
-      <Column field="producto" header="Producto"></Column>
-      <Column field="unidad" header="Unidad"></Column>
-      <Column field="cantidad" header="Cantidad"></Column>
-      <Column field="responsable_nombre" header="Responsable"></Column>
-      <Column field="rumpero" header="Rumpero"></Column>
-      <Column field="trabajador" header="Trabajador">
-        <template #body="data">
-          {{
-            data.data.trabajador && data.data.trabajador.trim() !== ""
-              ? data.data.trabajador
-              : "-"
-          }}
-        </template>
-      </Column>
-      <Column field="fecha_salida" header="Fecha">
-        <template #body="data">
-          {{
-            data.data.fecha_salida ? applyFormat(data.data.fecha_salida) : "-"
-          }}
-        </template>
-      </Column>
-      <Column header="Acciones">
-        <template #body="data">
-          <div>
-            <Button
-              icon="pi pi-pencil"
-              class="p-button-rounded p-button-success mr-2"
-              @click="edit(data.data)"
-            ></Button>
-            <Button
-              icon="pi pi-trash"
-              class="p-button-rounded p-button-danger"
-              @click="deleteData(data.data.id)"
-            ></Button>
-          </div>
-        </template>
-      </Column>
-    </DataTable>
+    <div class="h-[700px]">
+      <DataTable
+        :value="sortedSalidas"
+        stripedRows
+        scrollable
+        scrollHeight="700px"
+      >
+        <template #empty> No hay Salidas de Material </template>
+        <Column field="nivel" header="Nivel"></Column>
+        <Column field="material" header="Material"></Column>
+        <Column field="producto" header="Producto"></Column>
+        <Column field="unidad" header="Unidad"></Column>
+        <Column field="cantidad" header="Cantidad"></Column>
+        <Column field="responsable_nombre" header="Responsable"></Column>
+        <Column field="rumpero" header="Rumpero"></Column>
+        <Column field="trabajador" header="Trabajador">
+          <template #body="data">
+            {{
+              data.data.trabajador && data.data.trabajador.trim() !== ""
+                ? data.data.trabajador
+                : "-"
+            }}
+          </template>
+        </Column>
+        <Column field="fecha_salida" header="Fecha">
+          <template #body="data">
+            {{
+              data.data.fecha_salida ? applyFormat(data.data.fecha_salida) : "-"
+            }}
+          </template>
+        </Column>
+        <Column header="Acciones">
+          <template #body="data">
+            <div>
+              <Button
+                icon="pi pi-pencil"
+                class="p-button-rounded p-button-success mr-2"
+                @click="edit(data.data)"
+              ></Button>
+              <Button
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-danger"
+                @click="deleteData(data.data.id)"
+              ></Button>
+            </div>
+          </template>
+        </Column>
+      </DataTable>
+    </div>
+
+    <div class="flex justify-end mt-5">
+      <Button label="Salir" @click="logout" />
+    </div>
   </div>
 </template>
 
@@ -79,6 +85,9 @@ import Materials from "./Materials.vue";
 import Products from "./Productos.vue";
 import Salida from "./Salida.vue";
 import { useToast } from "primevue/usetoast";
+import { useRouter } from "vue-router";
+const router = useRouter();
+
 const toast = useToast();
 const salidas = ref([]);
 const checked = ref(false);
@@ -124,6 +133,11 @@ async function deleteData(id) {
 const dataEdit = ref();
 const edit = (data) => {
   dataEdit.value = data;
+};
+
+const logout = () => {
+  localStorage.removeItem("token");
+  router.push("/");
 };
 
 onMounted(() => {

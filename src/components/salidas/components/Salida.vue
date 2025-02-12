@@ -101,6 +101,7 @@
           :label="isEditMode ? 'Editar Salida' : 'Crear Salida'"
           autofocus
           @click="handleSubmit"
+          :disabled="!selectedMaterial || !selectedProducto || !selectedNivel || !cantidad || !nameResponsable || !nameRumpero || (!nameTrabajador && nameSelectedMaterial === 'EQUIPOS')"
         />
       </template>
     </Dialog>

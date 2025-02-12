@@ -40,7 +40,7 @@
           autofocus
         />
 
-        <Button label="Crear Producto" autofocus @click="createProduct" />
+        <Button label="Crear Producto" autofocus @click="createProduct" :disabled="!name.trim() || !selectedMaterial || !unidad.trim()"/>
       </template>
     </Dialog>
   </div>
