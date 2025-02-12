@@ -45,7 +45,7 @@ const menu = ref();
 const visible = ref(false);
 const dateFecha = ref(null);
 const formattedDate = ref(null);
-const reporteTipo = ref(null); // Nueva propiedad para almacenar el tipo de reporte
+const reporteTipo = ref(null);
 
 const items = ref([
   {
@@ -90,7 +90,7 @@ const cancelar = () => {
 
 const reporteDia = async () => {
   try {
-    const response = await axios.get("http://localhost:3000/api/reporte-dia", {
+    const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/reporte-dia`, {
       responseType: "blob",
     });
     const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -129,7 +129,7 @@ const generarReporte = async () => {
       return;
     }
 
-    const url = `http://localhost:3000/api/reportes/${reporteTipo.value === 'mensual' ? 'mensual' : 'mensual-total'}/${formattedDate.value}`;
+    const url = `${import.meta.env.VITE_API_URL}/api/reportes/${reporteTipo.value === 'mensual' ? 'mensual' : 'mensual-total'}/${formattedDate.value}`;
 
     const response = await axios.get(url, {
       responseType: "blob",
