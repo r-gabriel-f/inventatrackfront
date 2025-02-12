@@ -6,7 +6,11 @@
       <div class="flex gap-2">
         <Materials />
         <Products />
-        <Salida @change="refetch" />
+        <Salida
+          @change="refetch"
+          :dataEdit="dataEdit"
+          @clearEdit="dataEdit = null"
+        />
       </div>
       <div>
         <Reportes />
@@ -52,7 +56,7 @@
             <Button
               icon="pi pi-pencil"
               class="p-button-rounded p-button-success mr-2"
-              @click="edit(data.id)"
+              @click="edit(data.data)"
             ></Button>
             <Button
               icon="pi pi-trash"
@@ -70,7 +74,6 @@
 import { ref, onMounted, watch, computed } from "vue";
 import { applyFormat } from "../../../helpers/utils";
 import salidaService from "../../../services/client/salida.service";
-import reportsService from "../../../services/client/reports.service";
 import Reportes from "./Reportes.vue";
 import Materials from "./Materials.vue";
 import Products from "./Productos.vue";
@@ -118,6 +121,10 @@ async function deleteData(id) {
     });
   }
 }
+const dataEdit = ref();
+const edit = (data) => {
+  dataEdit.value = data;
+};
 
 onMounted(() => {
   if (data.value) {

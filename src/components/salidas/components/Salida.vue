@@ -1,13 +1,15 @@
 <template>
   <div class="card flex justify-center">
     <Toast />
-    <Button label="Crear salida de material" @click="visible = true" />
-    <Dialog v-model:visible="visible" modal>
+    <Button label="Crear salida de material" @click="handleButtonClick" />
+    <Dialog v-model:visible="visible" modal @hide="handleClose">
       <template #header>
         <div class="inline-flex items-center justify-center gap-2">
-          <span class="font-bold whitespace-nowrap"
-            >Crear salida de material</span
-          >
+          <span class="font-bold whitespace-nowrap">{{
+            isEditMode
+              ? "Editar salida de material"
+              : "Crear salida de material"
+          }}</span>
         </div>
       </template>
       <div class="grid grid-cols-2 gap-2">
@@ -92,20 +94,26 @@
         <Button
           label="Cancel"
           severity="secondary"
-          @click="visible = false"
+          @click="handleClose"
           autofocus
         />
-        <Button label="Crear Salida" autofocus @click="createSalida" />
+        <Button
+          :label="isEditMode ? 'Editar Salida' : 'Crear Salida'"
+          autofocus
+          @click="handleSubmit"
+        />
       </template>
     </Dialog>
   </div>
 </template>
+
 <script setup>
 import { computed, onMounted, ref, watch } from "vue";
 import materialsService from "../../../services/client/materials.service";
 import productsService from "../../../services/client/products.service";
 import salidaService from "../../../services/client/salida.service";
 import { useToast } from "primevue/usetoast";
+
 const toast = useToast();
 const visible = ref(false);
 const materials = ref([]);
@@ -118,6 +126,15 @@ const nameResponsable = ref("");
 const cantidad = ref(0);
 const nameRumpero = ref("");
 const nameTrabajador = ref("");
+const isEditMode = ref(false);
+
+const props = defineProps({
+  dataEdit: {
+    type: Object,
+    default: null,
+  },
+});
+
 const niveles = ref([
   { id: 1, name: "HARRISON" },
   { id: 2, name: "PATIÑO" },
@@ -134,18 +151,48 @@ const niveles = ref([
   { id: 13, name: "RELAVES" },
   { id: 14, name: "PLANTA PILOTO" },
 ]);
-const emit = defineEmits(["change"]);
+
+const emit = defineEmits(["change", "clearEdit"]);
+
+const paramts = {
+  enabled: false,
+};
+const paramtsMaterial = {
+  enabled: false,
+};
+
 const {
   data,
   isFetching,
   refetch: refetchMaterials,
-} = materialsService.useListQuery({}, { enabled: false });
+} = materialsService.useListQuery({}, paramts);
 
 const {
   data: dataProduct,
   isFetching: isFetchingProduct,
   refetch,
-} = productsService.useListQuery({}, { enabled: false });
+} = productsService.useListQuery({}, paramtsMaterial);
+const idData = ref(0);
+const { mutateAsync: createMutation } = salidaService.useCreateMutation();
+const { mutateAsync: updateMutation } = salidaService.useUpdateMutation(idData);
+
+const clearForm = () => {
+  selectedMaterial.value = null;
+  selectedProducto.value = null;
+  selectedNivel.value = null;
+  nameResponsable.value = "";
+  cantidad.value = 0;
+  nameRumpero.value = "";
+  nameTrabajador.value = "";
+  nameSelectedMaterial.value = "";
+  isEditMode.value = false;
+};
+
+const handleClose = () => {
+  visible.value = false;
+  clearForm();
+  emit("clearEdit");
+};
 
 const filteredProductos = computed(() => {
   if (!selectedMaterial.value) return productos.value;
@@ -154,9 +201,7 @@ const filteredProductos = computed(() => {
   );
 });
 
-const { mutateAsync } = salidaService.useCreateMutation();
-
-async function createSalida() {
+async function handleSubmit() {
   const payload = {
     material_id: selectedMaterial.value ?? null,
     producto_id: selectedProducto.value ?? null,
@@ -166,52 +211,64 @@ async function createSalida() {
     rumpero: nameRumpero.value ?? null,
     trabajador: nameTrabajador.value ?? null,
   };
+
   try {
-    await mutateAsync(payload);
-    toast.add({
-      severity: "success",
-      summary: "Salida creada",
-      detail: "Salida creada exitosamente",
-      life: 3000,
-    });
-    visible.value = false;
-    selectedMaterial.value = null;
-    selectedProducto.value = null;
-    selectedNivel.value = null;
-    nameResponsable.value = "";
-    cantidad.value = 0;
-    nameRumpero.value = "";
-    nameTrabajador.value = "";
+    if (isEditMode.value) {
+      await updateMutation(payload);
+      toast.add({
+        severity: "success",
+        summary: "Salida actualizada",
+        detail: "Salida actualizada exitosamente",
+        life: 3000,
+      });
+    } else {
+      await createMutation(payload);
+      toast.add({
+        severity: "success",
+        summary: "Salida creada",
+        detail: "Salida creada exitosamente",
+        life: 3000,
+      });
+    }
+    handleClose();
     emit("change");
   } catch (error) {
     toast.add({
       severity: "error",
       summary: "Error",
-      detail: "Error al crear la salida",
+      detail: isEditMode.value
+        ? "Error al actualizar la salida"
+        : "Error al crear la salida",
       life: 3000,
     });
   }
 }
 
-watch(visible, (newVal) => {
-  if (newVal) {
-    refetchMaterials();
-  }
-});
+const openDialog = async (isEdit = false) => {
+  clearForm();
+  isEditMode.value = isEdit; // Establecer el modo según el parámetro
+  paramts.enabled = true;
+  paramtsMaterial.enabled = true;
+  await Promise.all([refetch(), refetchMaterials()]);
+  visible.value = true;
+};
+const handleButtonClick = () => {
+  openDialog(false); // Explícitamente modo creación
+};
 
-watch(data, () => {
+onMounted(() => {
   if (data.value) {
     materials.value = data.value;
   }
 });
 
-watch(visible, (newVal) => {
-  if (newVal) {
-    refetch();
+watch(isFetching, () => {
+  if (data.value) {
+    materials.value = data.value;
   }
 });
 
-watch(dataProduct, () => {
+watch(isFetchingProduct, () => {
   if (dataProduct.value) {
     productos.value = dataProduct.value;
   }
@@ -227,4 +284,40 @@ watch(selectedMaterial, (newValue) => {
     }
   }
 });
+
+watch(
+  () => props.dataEdit,
+  async (newVal) => {
+    if (newVal) {
+      await openDialog(true);
+      idData.value = newVal.id;
+
+      if (
+        materials.value &&
+        materials.value.length > 0 &&
+        productos.value &&
+        productos.value.length > 0
+      ) {
+        const selectedMaterialObject = materials.value.find(
+          (material) => material.nombre === newVal.material
+        );
+
+        if (selectedMaterialObject) {
+          selectedMaterial.value = selectedMaterialObject.id;
+        }
+        const selectedProductoObject = productos.value.find(
+          (producto) => producto.nombre === newVal.producto
+        );
+        if (selectedProductoObject) {
+          selectedProducto.value = selectedProductoObject.id;
+        }
+        selectedNivel.value = newVal.nivel;
+        nameResponsable.value = newVal.responsable_nombre;
+        cantidad.value = newVal.cantidad;
+        nameRumpero.value = newVal.rumpero;
+        nameTrabajador.value = newVal.trabajador;
+      }
+    }
+  }
+);
 </script>
