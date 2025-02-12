@@ -1,7 +1,7 @@
 <template>
   <div class="card flex justify-center">
     <Toast />
-    <Button label="Crear salida de material" @click="handleButtonClick" />
+    <Button label="Registrar Pedido" @click="handleButtonClick" />
     <Dialog v-model:visible="visible" modal @hide="handleClose">
       <template #header>
         <div class="inline-flex items-center justify-center gap-2">

@@ -21,8 +21,11 @@
       <span>Ver Todos</span>
     </div>
     <div class="h-[700px]">
+      <div class="card flex justify-end m-2">
+        <Calendar v-model="dateFecha" view="month" dateFormat="mm/yy" />
+      </div>
       <DataTable
-        :value="sortedSalidas"
+        :value="filteredSalidas"
         stripedRows
         scrollable
         scrollHeight="700px"
@@ -86,22 +89,35 @@ import Products from "./Productos.vue";
 import Salida from "./Salida.vue";
 import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
-const router = useRouter();
 
+const router = useRouter();
 const toast = useToast();
 const salidas = ref([]);
 const checked = ref(false);
+const dateFecha = ref(null);
+const formattedDate = ref(null);
 
 const parans = ref({
   todas: false,
 });
+
 const { data, isFetching, refetch } = salidaService.useListQuery(parans);
-const sortedSalidas = computed(() => {
-  return [...salidas.value].sort((a, b) => {
+
+// New computed property to filter salidas based on selected date
+const filteredSalidas = computed(() => {
+  let filtered = [...salidas.value];
+  
+  if (formattedDate.value) {
+    filtered = filtered.filter(salida => {
+      const salidaDate = salida.fecha_salida.substring(0, 7); // Get YYYY-MM from date
+      return salidaDate === formattedDate.value;
+    });
+  }
+  
+  return filtered.sort((a, b) => {
     if (a.material !== b.material) {
       return a.material.localeCompare(b.material);
     }
-
     if (a.nivel !== b.nivel) {
       return a.nivel.localeCompare(b.nivel);
     }
@@ -110,13 +126,13 @@ const sortedSalidas = computed(() => {
 });
 
 const { mutateAsync: deleteDataMutation } = salidaService.useRemoveMutation();
+
 async function deleteData(id) {
-  console.log(id);
   try {
     await deleteDataMutation(id);
     toast.add({
       severity: "success",
-      summary: "Éxito",
+      summary: "Éxito",
       detail: "Salida eliminada",
       life: 3000,
     });
@@ -130,6 +146,7 @@ async function deleteData(id) {
     });
   }
 }
+
 const dataEdit = ref();
 const edit = (data) => {
   dataEdit.value = data;
@@ -145,13 +162,25 @@ onMounted(() => {
     salidas.value = data.value;
   }
 });
+
 watch(isFetching, () => {
   if (data.value) {
     salidas.value = data.value;
   }
 });
+
 watch(checked, () => {
   parans.value.todas = checked.value;
   refetch();
+});
+
+watch(dateFecha, (newDate) => {
+  if (newDate) {
+    const year = newDate.getFullYear();
+    const month = String(newDate.getMonth() + 1).padStart(2, '0');
+    formattedDate.value = `${year}-${month}`;
+  } else {
+    formattedDate.value = null;
+  }
 });
 </script>
