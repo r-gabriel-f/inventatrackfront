@@ -5,23 +5,14 @@
     <Dialog v-model:visible="visible" modal :style="{ width: '25rem' }">
       <template #header>
         <div class="inline-flex items-center justify-center gap-2">
-          <span class="font-bold whitespace-nowrap"
-            >Crear Producto de Material</span
-          >
+          <span class="font-bold whitespace-nowrap">Crear Producto de Material</span>
         </div>
       </template>
 
       <div class="flex items-center gap-4 mb-4">
         <label for="material" class="font-semibold w-24">Material</label>
-        <Select
-          v-model="selectedMaterial"
-          :options="materials"
-          filter
-          optionLabel="nombre"
-          optionValue="id"
-          placeholder="Seleccionar Material"
-          class="w-full"
-        />
+        <Select v-model="selectedMaterial" :options="materials" filter optionLabel="nombre" optionValue="id"
+          placeholder="Seleccionar Material" class="w-full" />
       </div>
       <div class="flex items-center gap-4 mb-4">
         <label for="nombre" class="font-semibold w-24">Nombre</label>
@@ -35,12 +26,9 @@
       <template #footer>
         <Button label="Cancel" severity="secondary" @click="cancel" autofocus />
 
-        <Button
-          label="Crear Producto"
-          autofocus
-          @click="createProduct"
-          :disabled="!name.trim() || !selectedMaterial || !unidad.trim()"
-        />
+        <Button label="Crear Producto" autofocus @click="createProduct"
+          :disabled="!name.trim() || !selectedMaterial || !(unidad ?? '').trim()" />
+
       </template>
     </Dialog>
   </div>
