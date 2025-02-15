@@ -31,6 +31,7 @@
         scrollHeight="650px"
       >
         <template #empty> No hay Salidas de Material </template>
+        <Column field="codigo" header="Codigo"></Column>
         <Column field="nivel" header="Nivel"></Column>
         <Column field="material" header="Material"></Column>
         <Column field="producto" header="Producto"></Column>
