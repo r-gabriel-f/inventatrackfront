@@ -5,9 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vite build && electron-builder",
+    "preview": "vite preview",
+    "electron:dev": "vite dev --mode electron",
+    "electron:build": "vite build && electron-builder",
+    "electron:preview": "vite preview --mode electron"
   },
+  "main": "electron/main.js",
   "dependencies": {
     "@primevue/themes": "^4.2.5",
     "@tailwindcss/vite": "^4.0.5",
@@ -22,6 +26,36 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
-    "vite": "^6.1.0"
+    "electron": "^34.2.0",
+    "electron-builder": "^25.1.8",
+    "vite": "^6.1.0",
+    "vite-plugin-electron": "^0.29.0"
+  },
+  "build": {
+    "appId": "com.inventatrack.app",
+    "productName": "InventaTrack",
+    "directories": {
+      "output": "dist_electron"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "InventaTrackBack",
+        "to": "InventaTrackBack",
+        "filter": ["**/*"]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.business"
+    },
+    "win": {
+      "target": ["nsis"]
+    },
+    "linux": {
+      "target": ["AppImage"]
+    }
   }
 }
