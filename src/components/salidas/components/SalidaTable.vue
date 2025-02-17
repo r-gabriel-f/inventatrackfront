@@ -3,13 +3,19 @@
     <Toast />
     <div class="flex justify-between">
       <div class="flex gap-2">
-        <Materials />
-        <Products />
-        <Salida
-          @change="refetch"
-          :dataEdit="dataEdit"
-          @clearEdit="dataEdit = null"
-        />
+        <div>
+          <Materials />
+        </div>
+        <div>
+          <Products />
+        </div>
+        <div>
+          <Salida
+            @change="refetch"
+            :dataEdit="dataEdit"
+            @clearEdit="dataEdit = null"
+          />
+        </div>
       </div>
       <div>
         <Reportes />
@@ -21,8 +27,14 @@
       <span>Ver Todos</span>
     </div>
     <div class="h-[700px]">
-      <div class="card flex justify-end my-2">
-        <Calendar v-model="dateFecha" view="month" dateFormat="mm/yy" />
+      <div class="card flex justify-end items-center gap-2 my-2">
+        <p>Buscar por Mes</p>
+        <Calendar
+          v-model="dateFecha"
+          view="month"
+          dateFormat="mm/yy"
+          :disabled="!checked"
+        />
       </div>
       <DataTable
         :value="filteredSalidas"
@@ -107,14 +119,14 @@ const { data, isFetching, refetch } = salidaService.useListQuery(parans);
 // New computed property to filter salidas based on selected date
 const filteredSalidas = computed(() => {
   let filtered = [...salidas.value];
-  
+
   if (formattedDate.value) {
-    filtered = filtered.filter(salida => {
+    filtered = filtered.filter((salida) => {
       const salidaDate = salida.fecha_salida.substring(0, 7); // Get YYYY-MM from date
       return salidaDate === formattedDate.value;
     });
   }
-  
+
   return filtered.sort((a, b) => {
     if (a.material !== b.material) {
       return a.material.localeCompare(b.material);
@@ -172,13 +184,16 @@ watch(isFetching, () => {
 
 watch(checked, () => {
   parans.value.todas = checked.value;
+  if (!checked.value) {
+    dateFecha.value = null;
+  }
   refetch();
 });
 
 watch(dateFecha, (newDate) => {
   if (newDate) {
     const year = newDate.getFullYear();
-    const month = String(newDate.getMonth() + 1).padStart(2, '0');
+    const month = String(newDate.getMonth() + 1).padStart(2, "0");
     formattedDate.value = `${year}-${month}`;
   } else {
     formattedDate.value = null;

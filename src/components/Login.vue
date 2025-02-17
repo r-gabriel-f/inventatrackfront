@@ -16,7 +16,7 @@
         <InputText
           id="password"
           v-model="password"
-          type="text"
+          type="password"
           placeholder="Contraseña"
           fluid
         />
@@ -40,7 +40,7 @@ const password = ref("");
 
 const loginObtener = async () => {
   try {
-    if (user.value === "omargf" && password.value === "67440842LpOGF") {
+    if (user.value === "Asist mina" && password.value === "EMHUANUNI2025") {
       localStorage.setItem("token", "usuario_autenticado");
 
       toast.add({

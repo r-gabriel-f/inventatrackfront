@@ -21,17 +21,21 @@
           @click="createMaterial"
           :disabled="!name.trim()"
         />
+        <Button label="Ver Materiales" @click="openMaterialDialog" />
       </template>
     </Dialog>
   </div>
+  <DialogMaterial v-model:visibleVerDialog="visibleVerDialog" :dataMaterials="dataMaterials" @updateMaterials="openMaterialDialog"/>
 </template>
 <script setup>
 import { ref, watch } from "vue";
 import materialsService from "../../../services/client/materials.service";
+import DialogMaterial from "./DialogMaterial.vue";
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
 const name = ref("");
 const visible = ref(false);
+const visibleVerDialog = ref(false);
 const dataMaterials = ref([]);
 const { mutateAsync } = materialsService.useCreateMutation();
 const options = {
@@ -40,16 +44,19 @@ const options = {
   refetchOnWindowFocus: false,
   refetchOnReconnect: false,
 };
-const { data, refetch } = materialsService.useListQuery(
-  {},
-  options
-);
+const { data, refetch } = materialsService.useListQuery({}, options);
 
 const openDialog = async () => {
   options.enabled = true;
   await refetch();
   visible.value = true;
 };
+
+const openMaterialDialog = async () => {
+  options.enabled = true;
+  await refetch();
+  visibleVerDialog.value = true;
+}
 
 const cancel = () => {
   visible.value = false;

@@ -20,6 +20,7 @@ import ToastService from 'primevue/toastservice';
 import InputSwitch from 'primevue/inputswitch';
 import Menu from 'primevue/menu';
 import Calendar from 'primevue/calendar';
+import Password from 'primevue/password';
 const app = createApp(App);
 
 app.use(VueQueryPlugin);
@@ -45,4 +46,5 @@ app.component('IconField', IconField);
 app.component('InputSwitch', InputSwitch);
 app.component('Menu', Menu);
 app.component('Calendar', Calendar);
+app.component('Password', Password);
 app.mount("#app");
