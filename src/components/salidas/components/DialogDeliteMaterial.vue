@@ -65,7 +65,7 @@ async function updateMaterial() {
     toast.add({
       severity: "error",
       summary: "Error",
-      detail: "Error al actualizar material",
+      detail: "Error al eliminar material",
       life: 3000,
     });
   }

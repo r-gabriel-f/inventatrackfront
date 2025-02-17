@@ -78,7 +78,7 @@
               <Button
                 icon="pi pi-trash"
                 class="p-button-rounded p-button-danger"
-                @click="deleteData(data.data.id)"
+                @click="deleteData(data.data)"
               ></Button>
             </div>
           </template>
@@ -90,12 +90,14 @@
       <Button label="Salir" @click="logout" />
     </div>
   </div>
+  <DialogDelitePedido v-model:visibleEliminarProducto="visibleEliminarProducto" :dataPedido="dataPedido" @updateMaterials="refetch" />
 </template>
 
 <script setup>
 import { ref, onMounted, watch, computed } from "vue";
 import { applyFormat } from "../../../helpers/utils";
 import salidaService from "../../../services/client/salida.service";
+import DialogDelitePedido from "./DialogDelitePedido.vue";
 import Reportes from "./Reportes.vue";
 import Materials from "./Materials.vue";
 import Products from "./Productos.vue";
@@ -109,6 +111,7 @@ const salidas = ref([]);
 const checked = ref(false);
 const dateFecha = ref(null);
 const formattedDate = ref(null);
+const visibleEliminarProducto = ref(false);
 
 const parans = ref({
   todas: false,
@@ -138,30 +141,16 @@ const filteredSalidas = computed(() => {
   });
 });
 
-const { mutateAsync: deleteDataMutation } = salidaService.useRemoveMutation();
-
-async function deleteData(id) {
-  try {
-    await deleteDataMutation(id);
-    toast.add({
-      severity: "success",
-      summary: "Éxito",
-      detail: "Salida eliminada",
-      life: 3000,
-    });
-    refetch();
-  } catch (error) {
-    toast.add({
-      severity: "error",
-      summary: "Error",
-      detail: "Salida no eliminada",
-      life: 3000,
-    });
-  }
+const dataPedido = ref();
+async function deleteData(data) {
+  dataPedido.value = data;
+  console.log(dataPedido.value);
+  visibleEliminarProducto.value = true;
 }
 
 const dataEdit = ref();
 const edit = (data) => {
+  console.log(data);
   dataEdit.value = data;
 };
 

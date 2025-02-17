@@ -6,7 +6,7 @@
       header="Lista de Materiales"
     >
       <div class="card">
-        <DataTable :value="dataMaterials">
+        <DataTable :value="dataMaterials" scrollable scrollHeight="400px">
           <Column field="nombre" header="Nombre"></Column>
           <Column header="Actions">
             <template #body="data">

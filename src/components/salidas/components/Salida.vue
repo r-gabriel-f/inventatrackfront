@@ -211,6 +211,7 @@ async function handleSubmit() {
     cantidad: cantidad.value ?? null,
     rumpero: nameRumpero.value ?? null,
     trabajador: nameTrabajador.value ?? null,
+    status: 1,
   };
 
   try {
@@ -290,6 +291,7 @@ watch(
   () => props.dataEdit,
   async (newVal) => {
     if (newVal) {
+      console.log(newVal);
       await openDialog(true);
       idData.value = newVal.id;
 
