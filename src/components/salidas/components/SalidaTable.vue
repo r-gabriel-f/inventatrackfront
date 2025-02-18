@@ -26,7 +26,7 @@
       <InputSwitch v-model="checked" />
       <span>Ver Todos</span>
     </div>
-    <div class="h-[700px]">
+    <div class="h-[850px]">
       <div class="card flex justify-end items-center gap-2 my-2">
         <p>Buscar por Mes</p>
         <Calendar
@@ -40,7 +40,7 @@
         :value="filteredSalidas"
         stripedRows
         scrollable
-        scrollHeight="650px"
+        scrollHeight="750px"
       >
         <template #empty> No hay Salidas de Material </template>
         <Column field="codigo" header="Codigo"></Column>
@@ -87,7 +87,7 @@
     </div>
 
     <div class="flex justify-end mt-5">
-      <Button label="Salir" @click="logout" />
+      <Button label="Salir" severity="danger" @click="logout" />
     </div>
   </div>
   <DialogDelitePedido v-model:visibleEliminarProducto="visibleEliminarProducto" :dataPedido="dataPedido" @updateMaterials="refetch" />
