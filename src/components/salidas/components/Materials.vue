@@ -10,7 +10,7 @@
       </template>
       <div class="flex items-center gap-4 mb-4">
         <label for="nombre" class="font-semibold w-24">Nombre</label>
-        <InputText id="nombre" class="flex-auto" v-model="name" />
+        <InputText id="nombre" class="flex-auto" v-model="name"  placeholder="Nombre del Material"/>
       </div>
       <template #footer>
         <Button label="Cancel" severity="secondary" @click="cancel" autofocus />
@@ -51,11 +51,13 @@ const openDialog = async () => {
   await refetch();
   visible.value = true;
 };
+const emit = defineEmits(["updateMaterials"]);
 
 const openMaterialDialog = async () => {
   options.enabled = true;
   await refetch();
   visibleVerDialog.value = true;
+  emit("updateMaterials");
 }
 
 const cancel = () => {

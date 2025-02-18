@@ -4,7 +4,7 @@
     <div class="flex justify-between">
       <div class="flex gap-2">
         <div>
-          <Materials />
+          <Materials @updateMaterials="refetch" />
         </div>
         <div>
           <Products />

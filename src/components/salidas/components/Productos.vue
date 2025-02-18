@@ -16,11 +16,11 @@
       </div>
       <div class="flex items-center gap-4 mb-4">
         <label for="nombre" class="font-semibold w-24">Nombre</label>
-        <InputText id="nombre" class="flex-auto w-full" v-model="name" />
+        <InputText id="nombre" class="flex-auto w-full" v-model="name" placeholder="Nombre del Producto"/>
       </div>
       <div class="flex items-center gap-4 mb-4">
         <label for="unidad" class="font-semibold w-24">Unidad</label>
-        <InputText id="unidad" class="flex-auto w-full" v-model="unidad" />
+        <InputText id="unidad" class="flex-auto w-full" v-model="unidad"  placeholder="Unidad del Producto"/>
       </div>
 
       <template #footer>

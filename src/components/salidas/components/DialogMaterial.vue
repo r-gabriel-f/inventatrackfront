@@ -7,6 +7,7 @@
     >
       <div class="card">
         <DataTable :value="dataMaterials" scrollable scrollHeight="400px">
+          <template #empty> No hay Materiales </template>
           <Column field="nombre" header="Nombre"></Column>
           <Column header="Actions">
             <template #body="data">
@@ -30,7 +31,7 @@
       </div>
     </Dialog>
   </div>
-  <DialogDeliteMaterial v-model:visibleEliminar="visibleEliminar" :dataMaterials="selectMaterial" @updateMaterials="$emit('updateMaterials')" />
+  <DialogDeliteMaterial v-model:visibleEliminar="visibleEliminar" :dataMaterials="selectMaterial" @updateMaterials="updateChange" />
 </template>
 
 <script setup>
@@ -52,8 +53,13 @@ const props = defineProps({
 async function updateMaterial(data) {
   selectMaterial.value = data;
   visibleEliminar.value = true;
-  console.log(selectMaterial.value);
 }
+
+const emit = defineEmits(["updateMaterials"]);
+
+const updateChange = () => {
+  emit("updateMaterials");
+};
 
 watch(props, () => {
   if (props.dataMaterials) {

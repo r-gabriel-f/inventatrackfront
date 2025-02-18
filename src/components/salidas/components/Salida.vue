@@ -57,7 +57,7 @@
         </div>
         <div class="flex items-center gap-4 mb-4">
           <label for="nombre" class="font-semibold w-24">Cantidad</label>
-          <InputText id="nombre" class="flex-auto w-full" v-model="cantidad" />
+          <InputText id="nombre" class="flex-auto w-full" v-model="cantidad" type="number" placeholder="Cantidad de Pedido"/>
         </div>
         <div class="flex items-center gap-4 mb-4">
           <label for="nombre" class="font-semibold w-24"
@@ -67,6 +67,7 @@
             id="nombre"
             class="flex-auto w-full"
             v-model="nameResponsable"
+            placeholder="Nombre del Responsable"
           />
         </div>
         <div class="flex items-center gap-4 mb-4">
@@ -75,6 +76,7 @@
             id="nombre"
             class="flex-auto w-full"
             v-model="nameRumpero"
+            placeholder="Nombre del Rumpero"
           />
         </div>
         <div
@@ -86,6 +88,7 @@
             id="nombre"
             class="flex-auto w-full"
             v-model="nameTrabajador"
+            placeholder="Nombre del Trabajador"
           />
         </div>
       </div>
