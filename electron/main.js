@@ -18,13 +18,11 @@ function createWindow() {
   })
 
   // Cargar la aplicación
-  if (process.env.VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
-  } else {
-    mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
-    mainWindow.webContents.openDevTools();
+  const localServerUrl = 'http://localhost:3001'
 
-  }
+  mainWindow.loadURL(localServerUrl)
+  mainWindow.webContents.openDevTools()
+
 
   // Manejar el cierre de la ventana
   mainWindow.on('closed', () => {
