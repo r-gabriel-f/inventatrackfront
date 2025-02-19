@@ -26,7 +26,7 @@
       <InputSwitch v-model="checked" />
       <span>Ver Todos</span>
     </div>
-    <div class="h-[850px]">
+    <div class="h-[700px]">
       <div class="card flex justify-end items-center gap-2 my-2">
         <p>Buscar por Mes</p>
         <Calendar
@@ -40,7 +40,7 @@
         :value="filteredSalidas"
         stripedRows
         scrollable
-        scrollHeight="750px"
+        scrollHeight="650px"
       >
         <template #empty> No hay Salidas de Material </template>
         <Column field="codigo" header="Codigo"></Column>
