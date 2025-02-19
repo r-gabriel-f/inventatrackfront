@@ -6,7 +6,7 @@ import { createServer } from 'net'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const isDev = process.env.NODE_ENV === 'development'
-const BASE_PORT = 3001
+const BASE_PORT = 65535
 
 function findAvailablePort(startPort) {
   return new Promise((resolve, reject) => {
@@ -47,13 +47,17 @@ async function createWindow() {
       contextIsolation: false
     }
   })
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.maximize();
+    mainWindow.show();
+  });
 
   let serverPort = BASE_PORT
   
   // Cargar la aplicación
   if (isDev) {
     // En desarrollo, cargar desde el servidor de Vite
-    await mainWindow.loadURL('http://localhost:3001')
+    await mainWindow.loadURL('http://localhost:65535')
     mainWindow.webContents.openDevTools()
   } else {
     // En producción, cargar desde el servidor express local
