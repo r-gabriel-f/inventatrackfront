@@ -57,7 +57,7 @@
         </div>
         <div class="flex items-center gap-4 mb-4">
           <label for="nombre" class="font-semibold w-24">Cantidad</label>
-          <InputText id="nombre" class="flex-auto w-full" v-model="cantidad" type="number" placeholder="Cantidad de Pedido"/>
+          <InputText id="nombre" class="flex-auto w-full" v-model="cantidad" type="number" :min="0" placeholder="Cantidad de Pedido"/>
         </div>
         <div class="flex items-center gap-4 mb-4">
           <label for="nombre" class="font-semibold w-24"
@@ -117,6 +117,7 @@ import materialsService from "../../../services/client/materials.service";
 import productsService from "../../../services/client/products.service";
 import salidaService from "../../../services/client/salida.service";
 import { useToast } from "primevue/usetoast";
+import { min } from "moment";
 
 const toast = useToast();
 const visible = ref(false);

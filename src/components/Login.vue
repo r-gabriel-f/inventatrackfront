@@ -40,7 +40,7 @@ const password = ref("");
 
 const loginObtener = async () => {
   try {
-    if (user.value === "a" && password.value === "a") {
+    if (user.value === "Asist mina" && password.value === "EMHUANUNI2025") {
       localStorage.setItem("token", "usuario_autenticado");
 
       toast.add({

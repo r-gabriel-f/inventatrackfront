@@ -26,7 +26,7 @@
       <InputSwitch v-model="checked" />
       <span>Ver Todos</span>
     </div>
-    <div class="h-[700px]">
+    <div class="h-[750px]">
       <div class="card flex justify-end items-center gap-2 my-2">
         <p>Buscar por Mes</p>
         <Calendar

@@ -264,6 +264,7 @@ const generarReporteNivel = async () => {
       } del nivel ${selectedNivel.value} generado correctamente`,
       life: 3000,
     });
+    selectedNivel.value = null
   } catch (error) {
     let mensaje = `Error al generar el reporte ${
       reporteTipo.value === "mensual" ? "mensual" : "mensual-total"
@@ -287,9 +288,7 @@ const generalReporte = () => {
   } else {
     generarReporte();
   }
-  selectedNivel.value = null;
   checked.value = false;
-  dateFecha.value = null;
 }
 
 watch(dateFecha, (newDate) => {
