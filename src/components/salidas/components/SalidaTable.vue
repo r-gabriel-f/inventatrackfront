@@ -40,18 +40,107 @@
         :value="filteredSalidas"
         stripedRows
         scrollable
-        scrollHeight="650px"
+        scrollHeight="680px"
+        v-model:filters="filters"
+        filterDisplay="row"
       >
         <template #empty> No hay Salidas de Material </template>
-        <Column field="codigo" header="Codigo"></Column>
-        <Column field="nivel" header="Nivel"></Column>
-        <Column field="material" header="Material"></Column>
-        <Column field="producto" header="Producto"></Column>
-        <Column field="unidad" header="Unidad"></Column>
-        <Column field="cantidad" header="Cantidad"></Column>
-        <Column field="responsable_nombre" header="Responsable"></Column>
-        <Column field="rumpero" header="Rumpero"></Column>
-        <Column field="trabajador" header="Trabajador">
+
+        <Column field="codigo" header="Código" :showFilterMenu="false">
+          <template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              @input="filterCallback()"
+              placeholder="Buscar Código"
+              class="w-30"
+            />
+          </template>
+        </Column>
+        <Column field="nivel" header="Nivel" :showFilterMenu="false">
+          <template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              @input="filterCallback()"
+              placeholder="Buscar Nivel"
+              class="w-30"
+            />
+          </template>
+        </Column>
+        <Column field="material" header="Material" :showFilterMenu="false"
+          ><template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              @input="filterCallback()"
+              placeholder="Buscar Material"
+              class="w-30"
+            /> </template
+        ></Column>
+        <Column field="producto" header="Producto" :showFilterMenu="false"
+          ><template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              @input="filterCallback()"
+              placeholder="Buscar Producto"
+              class="w-30"
+            /> </template
+        ></Column>
+        <Column field="unidad" header="Unidad" :showFilterMenu="false"
+          ><template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              @input="filterCallback()"
+              placeholder="Buscar Unidad"
+              class="w-30"
+            /> </template
+        ></Column>
+        <Column field="cantidad" header="Cantidad" :showFilterMenu="false"
+          ><template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              @input="filterCallback()"
+              placeholder="Buscar Cantidad"
+              class="w-30"
+            /> </template
+        ></Column>
+        <Column
+          field="responsable_nombre"
+          header="Responsable"
+          :showFilterMenu="false"
+          ><template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              @input="filterCallback()"
+              placeholder="Buscar Responsable"
+              class="w-30"
+            /> </template
+        ></Column>
+        <Column field="rumpero" header="Rumpero" :showFilterMenu="false"
+          ><template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              @input="filterCallback()"
+              placeholder="Buscar Rumpero"
+              class="w-30"
+            /> </template
+        ></Column>
+        <Column field="trabajador" header="Trabajador" :showFilterMenu="false">
+          <template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              @input="filterCallback()"
+              placeholder="Buscar Trabajador"
+              class="w-30"
+            />
+          </template>
           <template #body="data">
             {{
               data.data.trabajador && data.data.trabajador.trim() !== ""
@@ -60,7 +149,16 @@
             }}
           </template>
         </Column>
-        <Column field="fecha_salida" header="Fecha">
+        <Column field="fecha_salida" header="Fecha" :showFilterMenu="false">
+          <template #filter="{ filterModel, filterCallback }">
+            <InputText
+              v-model="filterModel.value"
+              type="text"
+              @input="filterCallback()"
+              placeholder="Buscar Fecha"
+              class="w-30"
+            />
+          </template>
           <template #body="data">
             {{
               data.data.fecha_salida ? applyFormat(data.data.fecha_salida) : "-"
@@ -90,7 +188,11 @@
       <Button label="Salir" severity="danger" @click="logout" />
     </div>
   </div>
-  <DialogDelitePedido v-model:visibleEliminarProducto="visibleEliminarProducto" :dataPedido="dataPedido" @updateMaterials="refetch" />
+  <DialogDelitePedido
+    v-model:visibleEliminarProducto="visibleEliminarProducto"
+    :dataPedido="dataPedido"
+    @updateMaterials="refetch"
+  />
 </template>
 
 <script setup>
@@ -104,7 +206,7 @@ import Products from "./Productos.vue";
 import Salida from "./Salida.vue";
 import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
-
+import { FilterMatchMode } from "@primevue/core/api";
 const router = useRouter();
 const toast = useToast();
 const salidas = ref([]);
@@ -113,6 +215,18 @@ const dateFecha = ref(null);
 const formattedDate = ref(null);
 const visibleEliminarProducto = ref(false);
 
+const filters = ref({
+  codigo: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  nivel: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  material: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  producto: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  responsable_nombre: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  trabajador: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  rumpero: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  unidad: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  cantidad: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  fecha_salida: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
 const parans = ref({
   todas: false,
 });
