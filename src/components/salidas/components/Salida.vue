@@ -155,6 +155,9 @@ const niveles = ref([
   { id: 12, name: "VIGILANCIA" },
   { id: 13, name: "RELAVES" },
   { id: 14, name: "PLANTA PILOTO" },
+  { id: 15, name: "ABC" },
+  { id: 16, name: "HSI" },
+  { id: 17, name: "ADMINISTRACION" },
 ]);
 
 const emit = defineEmits(["change", "clearEdit"]);
