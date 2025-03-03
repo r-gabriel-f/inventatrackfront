@@ -23,8 +23,11 @@
     <div class="h-[740px]">
       <div class="card flex justify-end my-2">
         <Calendar v-model="dateFecha" view="month" dateFormat="mm/yy" />
+        <Button v-if="selectedProduct.length>1" label="Qr Grupo" class="ml-2" @click="generateMultiplePDF" severity="info" />
       </div>
       <DataTable
+        v-model:selection="selectedProduct"
+        dataKey="id"
         :value="filteredSalidas"
         stripedRows
         scrollable
@@ -33,6 +36,7 @@
         filterDisplay="row"
       >
         <template #empty> No hay Salidas de Material </template>
+        <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
         <Column field="codigo" header="Código" :showFilterMenu="false">
           <template #filter="{ filterModel, filterCallback }">
             <InputText
@@ -156,6 +160,11 @@
           <template #body="data">
             <div>
               <Button
+                icon="pi pi-qrcode"
+                class="p-button-rounded p-button-info mr-2"
+                @click="generatePDF(data.data.id)"
+              />
+              <Button
                 icon="pi pi-pencil"
                 class="p-button-rounded p-button-success mr-2"
                 @click="edit(data.data)"
@@ -188,12 +197,14 @@ import Salida from "./Salida.vue";
 import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
 import { FilterMatchMode } from "@primevue/core/api";
+import axios from "axios";
 const router = useRouter();
 const toast = useToast();
 const salidas = ref([]);
 const checked = ref(false);
 const dateFecha = ref(null);
 const formattedDate = ref(null);
+const selectedProduct = ref([]);
 
 const filters = ref({
   codigo: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -262,6 +273,95 @@ const edit = (data) => {
   dataEdit.value = data;
 };
 
+const printPdf = async (dataId) => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/qr/${dataId}`,
+      {
+        responseType: "blob",
+      }
+    );
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const a = document.createElement("a");
+    a.href = url;
+    const fechaBolivia = new Date()
+      .toLocaleDateString("es-BO", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/\//g, "-");
+
+    a.download = `reporte_codigo_${dataId}.pdf`;
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    toast.add({
+      severity: "success",
+      summary: "Éxito",
+      detail: "Reporte generado correctamente del dia",
+      life: 3000,
+    });
+  } catch (error) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Codigo no generado",
+      life: 3000,
+    });
+  }
+};
+
+const generatePDF = async (data) => {
+  await printPdf(data);
+};
+
+const printPdfMultiple = async (dataId) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/qr/multiple`,
+      {
+        ids: dataId
+      },
+      {
+        responseType: "blob"
+      }
+    );
+    
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const a = document.createElement("a");
+    a.href = url;
+    const fechaBolivia = new Date()
+      .toLocaleDateString("es-BO", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/\//g, "-");
+
+    a.download = `reporte_codigo_multiple.pdf`;
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    toast.add({
+      severity: "success",
+      summary: "Éxito",
+      detail: "Reporte generado correctamente",
+      life: 3000,
+    });
+  } catch (error) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Código QR no generado",
+      life: 3000,
+    });
+  }
+};
 const logout = () => {
   localStorage.removeItem("token");
   router.push("/");
@@ -293,4 +393,12 @@ watch(dateFecha, (newDate) => {
     formattedDate.value = null;
   }
 });
+watch(selectedProduct, () => {
+  console.log(selectedProduct.value);
+});
+
+const generateMultiplePDF = () => {
+  const selectedIds = selectedProduct.value.map(product => product.id);
+  printPdfMultiple(selectedIds);
+};
 </script>

@@ -78,7 +78,6 @@
           />
         </div>
         <div
-          v-if="nameSelectedMaterial === 'EQUIPOS'"
           class="flex items-center gap-4 mb-4"
         >
           <label for="nombre" class="font-semibold w-24">Trabajador</label>
@@ -101,7 +100,7 @@
           :label="isEditMode ? 'Editar Salida' : 'Crear Salida'"
           autofocus
           @click="handleSubmit"
-          :disabled="!selectedMaterial || !selectedProducto || !selectedNivel || !cantidad || !nameResponsable || !nameRumpero || (!nameTrabajador && nameSelectedMaterial === 'EQUIPOS')"
+          :disabled="!selectedMaterial || !selectedProducto || !selectedNivel || !cantidad || !nameResponsable || !nameRumpero || ( nameSelectedMaterial === 'EQUIPOS')"
         />
       </template>
     </Dialog>
