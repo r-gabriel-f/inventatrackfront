@@ -296,7 +296,7 @@ const printPdf = async (dataId) => {
     toast.add({
       severity: "success",
       summary: "Éxito",
-      detail: "Reporte generado correctamente del dia",
+      detail: "Código QR generado correctamente",
       life: 3000,
     });
   } catch (error) {
@@ -345,7 +345,7 @@ const printPdfMultiple = async (dataId) => {
     toast.add({
       severity: "success",
       summary: "Éxito",
-      detail: "Reporte generado correctamente",
+      detail: "Código QR generado correctamente",
       life: 3000,
     });
   } catch (error) {
