@@ -28,7 +28,17 @@
     </div>
     <div class="h-[740px]">
       <div class="card flex justify-end my-2">
+        <label class="mr-2 flex items-center">Filtrar por mes</label>
         <Calendar v-model="dateFecha" view="month" dateFormat="mm/yy" />
+        <Button
+          v-if="selectedProduct.length > 1"
+          type="button"
+          icon="pi pi-qrcode"
+          label="Qr Grupal"
+          class="ml-2"
+          severity="info"
+          @click="generateMultiplePDF"
+        />
       </div>
       <DataTable
         v-model:selection="selectedProduct"
@@ -41,6 +51,7 @@
         filterDisplay="row"
       >
         <template #empty> No hay Salidas de Material </template>
+        <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
         <Column field="codigo" header="Código" :showFilterMenu="false">
           <template #filter="{ filterModel, filterCallback }">
             <InputText
@@ -214,6 +225,7 @@ const salidas = ref([]);
 const checked = ref(false);
 const dateFecha = ref(null);
 const formattedDate = ref(null);
+const selectedProduct = ref([]);
 
 const filters = ref({
   codigo: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -318,13 +330,13 @@ const printPdfMultiple = async (dataId) => {
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/api/qr/multiple`,
       {
-        ids: dataId
+        ids: dataId,
       },
       {
-        responseType: "blob"
+        responseType: "blob",
       }
     );
-    
+
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const a = document.createElement("a");
     a.href = url;
@@ -396,7 +408,7 @@ watch(selectedProduct, () => {
 });
 
 const generateMultiplePDF = () => {
-  const selectedIds = selectedProduct.value.map(product => product.id);
+  const selectedIds = selectedProduct.value.map((product) => product.id);
   printPdfMultiple(selectedIds);
 };
 </script>
