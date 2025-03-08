@@ -23,13 +23,13 @@
         <InputText id="unidad" class="flex-auto w-full" v-model="unidad"  placeholder="Unidad del Producto"/>
       </div>
 
-      <template #footer>
+      <div class="flex justify-end gap-2 mt-2">
         <Button label="Cancel" severity="secondary" @click="cancel" autofocus />
 
         <Button label="Crear Producto" autofocus @click="createProduct"
           :disabled="!name.trim() || !selectedMaterial || !(unidad ?? '').trim()" />
 
-      </template>
+      </div>
     </Dialog>
   </div>
 </template>
@@ -122,7 +122,6 @@ watch(data, () => {
 watch(dataProduct, () => {
   if (dataProduct.value) {
     dataProductos.value = dataProduct.value;
-    console.log(dataProductos.value);
   }
 });
 </script>

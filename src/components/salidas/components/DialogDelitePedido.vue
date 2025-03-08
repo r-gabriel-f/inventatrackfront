@@ -11,7 +11,7 @@
           {{ selectMaterial.codigo }}</span
         >
       </div>
-      <div class="flex justify-end gap-2">
+      <div class="flex justify-end gap-2 mt-2">
         <Button
           type="button"
           label="Cancel"
@@ -59,7 +59,6 @@ const emit = defineEmits(["updateMaterials"]);
 
 async function updateMaterial() {
   idMaterial.value = selectMaterial.value.id;
-  console.log(salidas.value.data);
   const materialId = salidas.value.data.material_id;
   const productoId = salidas.value.data.producto_id;
   const nivel = salidas.value.data.nivel;

@@ -7,7 +7,7 @@
           {{ selectMaterial.nombre }}</span
         >
       </div>
-      <div class="flex justify-end gap-2">
+      <div class="flex justify-end gap-2 mt-2">
         <Button
           type="button"
           label="Cancel"

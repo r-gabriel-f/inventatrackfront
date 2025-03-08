@@ -57,7 +57,14 @@
         </div>
         <div class="flex items-center gap-4 mb-4">
           <label for="nombre" class="font-semibold w-24">Cantidad</label>
-          <InputText id="nombre" class="flex-auto w-full" v-model="cantidad" type="number" :min="0" placeholder="Cantidad de Pedido"/>
+          <InputText
+            id="nombre"
+            class="flex-auto w-full"
+            v-model="cantidad"
+            type="number"
+            :min="0"
+            placeholder="Cantidad de Pedido"
+          />
         </div>
         <div class="flex items-center gap-4 mb-4">
           <label for="nombre" class="font-semibold w-24"
@@ -79,9 +86,7 @@
             placeholder="Nombre del Rumpero"
           />
         </div>
-        <div
-          class="flex items-center gap-4 mb-4"
-        >
+        <div class="flex items-center gap-4 mb-4">
           <label for="nombre" class="font-semibold w-24">Trabajador</label>
           <InputText
             id="nombre"
@@ -91,8 +96,7 @@
           />
         </div>
       </div>
-
-      <template #footer>
+      <div class="flex justify-end gap-2 mt-2">
         <Button
           label="Cancel"
           severity="secondary"
@@ -102,10 +106,18 @@
         <Button
           :label="isEditMode ? 'Editar Salida' : 'Crear Salida'"
           autofocus
+          type="submit"
           @click="handleSubmit"
-          :disabled="!selectedMaterial || !selectedProducto || !selectedNivel || !cantidad || !nameResponsable || !nameRumpero"
+          :disabled="
+            !selectedMaterial ||
+            !selectedProducto ||
+            !selectedNivel ||
+            !cantidad ||
+            !nameResponsable ||
+            !nameRumpero
+          "
         />
-      </template>
+      </div>
     </Dialog>
   </div>
 </template>
@@ -116,7 +128,6 @@ import materialsService from "../../../services/client/materials.service";
 import productsService from "../../../services/client/products.service";
 import salidaService from "../../../services/client/salida.service";
 import { useToast } from "primevue/usetoast";
-import { min } from "moment";
 
 const toast = useToast();
 const visible = ref(false);
@@ -297,7 +308,6 @@ watch(
   () => props.dataEdit,
   async (newVal) => {
     if (newVal) {
-      console.log(newVal);
       await openDialog(true);
       idData.value = newVal.id;
 

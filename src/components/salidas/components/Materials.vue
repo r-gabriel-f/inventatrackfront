@@ -12,7 +12,7 @@
         <label for="nombre" class="font-semibold w-24">Nombre</label>
         <InputText id="nombre" class="flex-auto" v-model="name"  placeholder="Nombre del Material"/>
       </div>
-      <template #footer>
+      <div class="flex justify-end gap-2 mt-2">
         <Button label="Cancel" severity="secondary" @click="cancel" autofocus />
 
         <Button
@@ -21,8 +21,8 @@
           @click="createMaterial"
           :disabled="!name.trim()"
         />
-        <Button label="Ver Materiales" @click="openMaterialDialog" />
-      </template>
+        <Button label="Ver Materiales" @click="openMaterialDialog" severity="info" />
+      </div>
     </Dialog>
   </div>
   <DialogMaterial v-model:visibleVerDialog="visibleVerDialog" :dataMaterials="dataMaterials" @updateMaterials="openMaterialDialog"/>

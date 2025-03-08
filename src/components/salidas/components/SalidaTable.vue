@@ -31,7 +31,7 @@
         <label class="mr-2 flex items-center">Filtrar por mes</label>
         <Calendar v-model="dateFecha" view="month" dateFormat="mm/yy" />
         <Button
-          v-if="selectedProduct.length > 1"
+          v-if="selectedProduct.length > 0"
           type="button"
           icon="pi pi-qrcode"
           label="Qr Grupal"
@@ -226,6 +226,7 @@ const checked = ref(false);
 const dateFecha = ref(null);
 const formattedDate = ref(null);
 const selectedProduct = ref([]);
+const visibleEliminarProducto = ref(false);
 
 const filters = ref({
   codigo: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -270,13 +271,11 @@ const filteredSalidas = computed(() => {
 const dataPedido = ref();
 async function deleteData(data) {
   dataPedido.value = data;
-  console.log(dataPedido.value);
   visibleEliminarProducto.value = true;
 }
 
 const dataEdit = ref();
 const edit = (data) => {
-  console.log(data);
   dataEdit.value = data;
 };
 
@@ -403,10 +402,6 @@ watch(dateFecha, (newDate) => {
     formattedDate.value = null;
   }
 });
-watch(selectedProduct, () => {
-  console.log(selectedProduct.value);
-});
-
 const generateMultiplePDF = () => {
   const selectedIds = selectedProduct.value.map((product) => product.id);
   printPdfMultiple(selectedIds);

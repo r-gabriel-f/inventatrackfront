@@ -21,7 +21,7 @@
         </DataTable>
       </div>
 
-      <div class="flex justify-end gap-2">
+      <div class="flex justify-end gap-2 mt-2">
         <Button
           type="button"
           label="Cancel"
@@ -31,7 +31,11 @@
       </div>
     </Dialog>
   </div>
-  <DialogDeliteMaterial v-model:visibleEliminar="visibleEliminar" :dataMaterials="selectMaterial" @updateMaterials="updateChange" />
+  <DialogDeliteMaterial
+    v-model:visibleEliminar="visibleEliminar"
+    :dataMaterials="selectMaterial"
+    @updateMaterials="updateChange"
+  />
 </template>
 
 <script setup>
