@@ -5,31 +5,61 @@
     <Dialog v-model:visible="visible" modal :style="{ width: '25rem' }">
       <template #header>
         <div class="inline-flex items-center justify-center gap-2">
-          <span class="font-bold whitespace-nowrap">Crear Producto de Material</span>
+          <span class="font-bold whitespace-nowrap"
+            >Crear Producto de Material</span
+          >
         </div>
       </template>
+      <form @submit.prevent="createProduct">
+        <div class="flex items-center gap-4 mb-4">
+          <label for="material" class="font-semibold w-24">Material</label>
+          <Select
+            v-model="selectedMaterial"
+            :options="materials"
+            filter
+            optionLabel="nombre"
+            optionValue="id"
+            placeholder="Seleccionar Material"
+            class="w-full"
+          />
+        </div>
+        <div class="flex items-center gap-4 mb-4">
+          <label for="nombre" class="font-semibold w-24">Nombre</label>
+          <InputText
+            id="nombre"
+            class="flex-auto w-full"
+            v-model="name"
+            placeholder="Nombre del Producto"
+          />
+        </div>
+        <div class="flex items-center gap-4 mb-4">
+          <label for="unidad" class="font-semibold w-24">Unidad</label>
+          <InputText
+            id="unidad"
+            class="flex-auto w-full"
+            v-model="unidad"
+            placeholder="Unidad del Producto"
+          />
+        </div>
 
-      <div class="flex items-center gap-4 mb-4">
-        <label for="material" class="font-semibold w-24">Material</label>
-        <Select v-model="selectedMaterial" :options="materials" filter optionLabel="nombre" optionValue="id"
-          placeholder="Seleccionar Material" class="w-full" />
-      </div>
-      <div class="flex items-center gap-4 mb-4">
-        <label for="nombre" class="font-semibold w-24">Nombre</label>
-        <InputText id="nombre" class="flex-auto w-full" v-model="name" placeholder="Nombre del Producto"/>
-      </div>
-      <div class="flex items-center gap-4 mb-4">
-        <label for="unidad" class="font-semibold w-24">Unidad</label>
-        <InputText id="unidad" class="flex-auto w-full" v-model="unidad"  placeholder="Unidad del Producto"/>
-      </div>
+        <div class="flex justify-end gap-2 mt-2">
+          <Button
+            label="Cancel"
+            severity="secondary"
+            @click="clearForm"
+            autofocus
+          />
 
-      <div class="flex justify-end gap-2 mt-2">
-        <Button label="Cancel" severity="secondary" @click="cancel" autofocus />
-
-        <Button label="Crear Producto" autofocus @click="createProduct"
-          :disabled="!name.trim() || !selectedMaterial || !(unidad ?? '').trim()" />
-
-      </div>
+          <Button
+            label="Crear Producto"
+            autofocus
+            type="submit"
+            :disabled="
+              !name.trim() || !selectedMaterial || !(unidad ?? '').trim()
+            "
+          />
+        </div>
+      </form>
     </Dialog>
   </div>
 </template>
@@ -107,6 +137,14 @@ const openDialog = async () => {
   visible.value = true;
 };
 const cancel = () => {
+  //visible.value = false;
+  name.value = "";
+  unidad.value = null;
+  selectedMaterial.value = null;
+};
+
+
+const clearForm = () => {
   visible.value = false;
   name.value = "";
   unidad.value = null;

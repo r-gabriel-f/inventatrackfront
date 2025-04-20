@@ -3,26 +3,26 @@
     <Toast />
     <h1 class="text-2xl font-bold mb-6">Iniciar Sesión</h1>
     <div class="card flex justify-center">
-      <div v-focustrap class="w-full sm:w-80 flex flex-col gap-6">
-        <InputText
-          id="user"
-          v-model="user"
-          type="user"
-          placeholder="Usuario"
-          autofocus
-          fluid
-        />
-
-        <InputText
-          id="password"
-          v-model="password"
-          type="password"
-          placeholder="Contraseña"
-          fluid
-        />
-
-        <Button label="Iniciar" class="mt-2" @click="loginObtener" />
-      </div>
+      <form @submit.prevent="loginObtener">
+        <div v-focustrap class="w-full sm:w-80 flex flex-col gap-6">
+          <InputText
+            id="user"
+            v-model="user"
+            type="user"
+            placeholder="Usuario"
+            autofocus
+            fluid
+          />
+          <InputText
+            id="password"
+            v-model="password"
+            type="password"
+            placeholder="Contraseña"
+            fluid
+          />
+          <Button label="Iniciar" class="mt-2" type="submit" />
+        </div>
+      </form>
     </div>
   </div>
 </template>

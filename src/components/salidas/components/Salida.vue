@@ -12,112 +12,113 @@
           }}</span>
         </div>
       </template>
-      <div class="grid grid-cols-2 gap-2">
-        <div class="flex items-center gap-4 mb-4">
-          <label for="material" class="font-semibold w-24">Material</label>
-          <Select
-            v-model="selectedMaterial"
-            :options="materials"
-            filter
-            optionLabel="nombre"
-            optionValue="id"
-            placeholder="Seleccionar Material"
-            class="w-full"
+      <form @submit.prevent="handleSubmit">
+        <div class="grid grid-cols-2 gap-2">
+          <div class="flex items-center gap-4 mb-4">
+            <label for="material" class="font-semibold w-24">Material</label>
+            <Select
+              v-model="selectedMaterial"
+              :options="materials"
+              filter
+              optionLabel="nombre"
+              optionValue="id"
+              placeholder="Seleccionar Material"
+              class="w-full"
+            />
+          </div>
+          <div class="flex items-center gap-4 mb-4">
+            <label for="nombre" class="font-semibold w-24"
+              >Material Producto</label
+            >
+            <Select
+              v-model="selectedProducto"
+              :options="filteredProductos"
+              filter
+              optionLabel="nombre"
+              optionValue="id"
+              placeholder="Seleccionar Producto"
+              class="w-full"
+            >
+              <template #option="slotProps">
+                {{ slotProps.option.nombre }} ({{ slotProps.option.unidad }})
+              </template>
+            </Select>
+          </div>
+          <div class="flex items-center gap-4 mb-4">
+            <label for="material" class="font-semibold w-24">Nivel</label>
+            <Select
+              v-model="selectedNivel"
+              :options="niveles"
+              filter
+              optionLabel="name"
+              optionValue="name"
+              placeholder="Seleccionar Nivel"
+              class="w-full"
+            />
+          </div>
+          <div class="flex items-center gap-4 mb-4">
+            <label for="nombre" class="font-semibold w-24">Cantidad</label>
+            <InputText
+              id="nombre"
+              class="flex-auto w-full"
+              v-model="cantidad"
+              type="number"
+              :min="0"
+              placeholder="Cantidad de Pedido"
+            />
+          </div>
+          <div class="flex items-center gap-4 mb-4">
+            <label for="nombre" class="font-semibold w-24"
+              >Nombre Responsable</label
+            >
+            <InputText
+              id="nombre"
+              class="flex-auto w-full"
+              v-model="nameResponsable"
+              placeholder="Nombre del Responsable"
+            />
+          </div>
+          <div class="flex items-center gap-4 mb-4">
+            <label for="nombre" class="font-semibold w-24">Rumpero</label>
+            <InputText
+              id="nombre"
+              class="flex-auto w-full"
+              v-model="nameRumpero"
+              placeholder="Nombre del Rumpero"
+            />
+          </div>
+          <div class="flex items-center gap-4 mb-4">
+            <label for="nombre" class="font-semibold w-24">Trabajador</label>
+            <InputText
+              id="nombre"
+              class="flex-auto w-full"
+              v-model="nameTrabajador"
+              placeholder="Nombre del Trabajador"
+            />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 mt-2">
+          <Button
+            label="Cancel"
+            severity="secondary"
+            @click="visible = false"
+            autofocus
+          />
+          <Button
+            :label="isEditMode ? 'Editar Salida' : 'Crear Salida'"
+            autofocus
+            type="submit"
+            :disabled="
+              !selectedMaterial ||
+              !selectedProducto ||
+              !selectedNivel ||
+              !cantidad ||
+              !nameResponsable ||
+              !nameRumpero
+            "
           />
         </div>
-        <div class="flex items-center gap-4 mb-4">
-          <label for="nombre" class="font-semibold w-24"
-            >Material Producto</label
-          >
-          <Select
-            v-model="selectedProducto"
-            :options="filteredProductos"
-            filter
-            optionLabel="nombre"
-            optionValue="id"
-            placeholder="Seleccionar Producto"
-            class="w-full"
-          >
-            <template #option="slotProps">
-              {{ slotProps.option.nombre }} ({{ slotProps.option.unidad }})
-            </template>
-          </Select>
-        </div>
-        <div class="flex items-center gap-4 mb-4">
-          <label for="material" class="font-semibold w-24">Nivel</label>
-          <Select
-            v-model="selectedNivel"
-            :options="niveles"
-            filter
-            optionLabel="name"
-            optionValue="name"
-            placeholder="Seleccionar Nivel"
-            class="w-full"
-          />
-        </div>
-        <div class="flex items-center gap-4 mb-4">
-          <label for="nombre" class="font-semibold w-24">Cantidad</label>
-          <InputText
-            id="nombre"
-            class="flex-auto w-full"
-            v-model="cantidad"
-            type="number"
-            :min="0"
-            placeholder="Cantidad de Pedido"
-          />
-        </div>
-        <div class="flex items-center gap-4 mb-4">
-          <label for="nombre" class="font-semibold w-24"
-            >Nombre Responsable</label
-          >
-          <InputText
-            id="nombre"
-            class="flex-auto w-full"
-            v-model="nameResponsable"
-            placeholder="Nombre del Responsable"
-          />
-        </div>
-        <div class="flex items-center gap-4 mb-4">
-          <label for="nombre" class="font-semibold w-24">Rumpero</label>
-          <InputText
-            id="nombre"
-            class="flex-auto w-full"
-            v-model="nameRumpero"
-            placeholder="Nombre del Rumpero"
-          />
-        </div>
-        <div class="flex items-center gap-4 mb-4">
-          <label for="nombre" class="font-semibold w-24">Trabajador</label>
-          <InputText
-            id="nombre"
-            class="flex-auto w-full"
-            v-model="nameTrabajador"
-            placeholder="Nombre del Trabajador"
-          />
-        </div>
-      </div>
-      <div class="flex justify-end gap-2 mt-2">
-        <Button
-          label="Cancel"
-          severity="secondary"
-          @click="handleClose"
-          autofocus
-        />
-        <Button
-          :label="isEditMode ? 'Editar Salida' : 'Crear Salida'"
-          autofocus
-          type="submit"
-          @click="handleSubmit"
-          :disabled="
-            !selectedMaterial ||
-            !selectedProducto ||
-            !selectedNivel ||
-            !cantidad ||
-            !nameResponsable ||
-            !nameRumpero
-          "
-        />
-      </div>
+      </form>
     </Dialog>
   </div>
 </template>
@@ -207,7 +208,7 @@ const clearForm = () => {
 };
 
 const handleClose = () => {
-  visible.value = false;
+  //visible.value = false;
   clearForm();
   emit("clearEdit");
 };
